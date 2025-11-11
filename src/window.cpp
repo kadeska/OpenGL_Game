@@ -1,9 +1,6 @@
 #include <iostream>
 #include <map>
 
-
-
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -19,7 +16,9 @@
 #include "../include/programLogger.hpp"
 using ProgramLogger::log;
 
-
+// FreeType
+// --------
+FT_Library ft;
 
 struct Character {
     unsigned int TextureID;  // ID handle of the glyph texture
@@ -68,6 +67,7 @@ void Window::initialize(float _camX, float _camY, float _camZ)
 
 
     //initFreeType();
+    //configureFreeType();
 
 
     // glm test
@@ -89,8 +89,13 @@ void Window::createShaderProgram()
     ourShader->setUp();
 	textureLoader.loadTextures(ourShader);
 
+
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     textShader = new Shader("shaders/textVertexShader.vs", "shaders/textFragmentShader.fs");
-    
+
     // After creating textShader in Window::createShaderProgram
     glGenVertexArrays(1, &textShader->textVAO);
     glGenBuffers(1, &textShader->textVBO);
@@ -101,6 +106,10 @@ void Window::createShaderProgram()
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(SCR_WIDTH), 0.0f, static_cast<float>(SCR_HEIGHT));
+    textShader->use();
+    glUniformMatrix4fv(glGetUniformLocation(textShader->ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
 }
 
@@ -177,6 +186,21 @@ int Window::initFreeType()
     // destroy FreeType once we're finished
     FT_Done_Face(face);
     FT_Done_FreeType(ft);
+}
+
+void Window::configureFreeType()
+{
+    // configure VAO/VBO for texture quads
+    // -----------------------------------
+    glGenVertexArrays(1, &textShader->textVAO);
+    glGenBuffers(1, &textShader->textVBO);
+    glBindVertexArray(textShader->textVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, textShader->textVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
 
 void Window::createWindow()
@@ -262,7 +286,7 @@ void Window::render()
 	// ------
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT/* | GL_DEPTH_BUFFER_BIT*/);
 
     // Activate and Bind Textures
     glActiveTexture(GL_TEXTURE0);
@@ -272,8 +296,6 @@ void Window::render()
 
 	// Use shader program
 	ourShader->use();
-
-   
 
     // pass projection matrix to shader (note that in this case it could change every frame)
     
@@ -306,47 +328,43 @@ void Window::render()
 
 	//glBindVertexArray(0); // no need to unbind it every time
 
+
+
+
     // render text
+    // -----------------------------
     
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    textShader->setInt("text", 0); // Add this before rendering text
+    //textShader->setInt("text", 0); // Add this before rendering text
 
     // src/window.cpp (in render or after rendering 3D objects)
-    RenderText(textShader, "Hello World", 10, 10, 10, glm::vec3(1.0f, 1.0f, 1.0f));
+    RenderText(textShader, "Hello World", 25.0f, 25.0f, 1.0f, glm::vec3(0.5f, 0.8f, 0.2f));
 }
 
 
 void Window::RenderText(Shader* shader, std::string text, float x, float y, float scale, glm::vec3 color)
 {
+    // activate corresponding render state	
     shader->use();
-    shader->setVec3("textColor", color);
-    shader->setInt("text", 0); // Ensure sampler2D uses texture unit 0
-
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(SCR_WIDTH), 0.0f, static_cast<float>(SCR_HEIGHT));
-    shader->setMat4("projection", projection);
-
+    glUniform3f(glGetUniformLocation(shader->ID, "textColor"), color.x, color.y, color.z);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(shader->textVAO);
 
-    for (auto c : text)
+    // iterate through all characters
+    std::string::const_iterator c;
+    for (c = text.begin(); c != text.end(); c++)
     {
-        //if (Characters.find(c) == Characters.end()) continue; // skip missing glyphs
-        if (Characters.find(c) == Characters.end()) {
-            std::cout << "Missing glyph for: " << c << std::endl;
-            continue;
-        }
-
-
-        Character ch = Characters[c];
+        Character ch = Characters[*c];
 
         float xpos = x + ch.Bearing.x * scale;
         float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
 
         float w = ch.Size.x * scale;
         float h = ch.Size.y * scale;
+        // update VBO for each character
         float vertices[6][4] = {
             { xpos,     ypos + h,   0.0f, 0.0f },
             { xpos,     ypos,       0.0f, 1.0f },
@@ -356,17 +374,18 @@ void Window::RenderText(Shader* shader, std::string text, float x, float y, floa
             { xpos + w, ypos,       1.0f, 1.0f },
             { xpos + w, ypos + h,   1.0f, 0.0f }
         };
+        // render glyph texture over quad
         glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-
+        // update content of VBO memory
         glBindBuffer(GL_ARRAY_BUFFER, shader->textVBO);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // be sure to use glBufferSubData and not glBufferData
 
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        // render quad
         glDrawArrays(GL_TRIANGLES, 0, 6);
-
-        x += (ch.Advance >> 6) * scale;
+        // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+        x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
     }
-    glBindVertexArray(0);
-    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Window::terminateWindow()

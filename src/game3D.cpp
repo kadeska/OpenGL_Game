@@ -23,6 +23,7 @@ Game3D::Game3D()
 	myWindow.loadOpenGL();
 	myWindow.createShaderProgram();
 	myWindow.initFreeType();
+	myWindow.configureFreeType();
 
 	// Create world
 	myWorld = new World(myWindow.ourShader, WORLD_SEED, WORLD_SIZE);

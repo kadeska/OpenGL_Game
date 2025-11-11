@@ -32,9 +32,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 class Window
 {
 public:
-	// FreeType
-	// --------
-	FT_Library ft;
+
 
 	// settings
 
@@ -56,6 +54,7 @@ public:
 	void loadOpenGL();
 	void createShaderProgram();
 	int initFreeType();
+	void configureFreeType();
 
 
 	void mainLoop(World* _world);
