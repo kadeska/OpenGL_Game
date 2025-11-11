@@ -98,7 +98,7 @@ bool World::checkPlayerCollisions()
 			log("Collision detected at position: (" +
 				std::to_string(checkPos.x) + ", " +
 				std::to_string(checkPos.y) + ", " +
-				std::to_string(checkPos.z) + ")", LogLevel::INFO);
+				std::to_string(checkPos.z) + ")", LogLevel::DEBUG);
 			return true;
 		}
 	}
@@ -150,7 +150,7 @@ bool World::isPositionOccupied(glm::vec3 _pos)
 
 		if (X1 == X2 && Y1 == Y2 && Z1 == Z2) 
 		{
-			log("Position is already occupied.");
+			log("Position is already occupied.", LogLevel::DEBUG);
 			return true;
 		}
 		/*if (cube.getEntityPosition() == _pos)

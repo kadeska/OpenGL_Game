@@ -15,7 +15,7 @@ class Shader
 public:
 	VertexData vertData;
 	unsigned int ID;
-	unsigned int VBO, VAO, EBO;
+	unsigned int textVBO, textVAO, VBO, VAO, EBO;
 
 	Shader(const char* _vertexShaderPath, const char* _fragmentShaderPath);
 	~Shader();

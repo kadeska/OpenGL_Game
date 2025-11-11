@@ -68,6 +68,9 @@ void Shader::setUp()
     glCullFace(GL_BACK);
     glFrontFace(GL_CW);
 
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);

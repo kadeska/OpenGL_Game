@@ -1,7 +1,15 @@
 #pragma once
 
+#include <iostream>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 //#include "../include/shaderProgram.hpp"
 #include "shader.hpp"
@@ -24,6 +32,10 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 class Window
 {
 public:
+	// FreeType
+	// --------
+	FT_Library ft;
+
 	// settings
 
 	const unsigned int SCR_WIDTH = 800;
@@ -32,6 +44,7 @@ public:
 	GLFWwindow* window;
 	//ShaderProgram* shaderProgram;
 	Shader* ourShader;
+	Shader* textShader;
 	TextureLoader textureLoader;
 
 	// functions
@@ -42,8 +55,11 @@ public:
 	void createWindow();
 	void loadOpenGL();
 	void createShaderProgram();
-	
+	int initFreeType();
+
+
 	void mainLoop(World* _world);
+	void RenderText(Shader* shader, std::string text, float x, float y, float scale, glm::vec3 color);
 	void terminateWindow();
 
 	// ---------------------------------------------------
