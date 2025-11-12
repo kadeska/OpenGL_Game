@@ -131,7 +131,7 @@ void Window::mainLoop(World* _world)
         //render();
 
         TextRenderer textRenderer;
-        textRenderer.renderText("Testing", ourShader, glm::vec3(5.0f, 2.0f, 3.0f), 5.0f, 5.0f, 1.0f, "fonts/arial.ttf");
+        textRenderer.renderText("Testing", ourShader, glm::vec3(5.0f, 2.0f, 3.0f), 5.0f, 5.0f, 1.0f,SCR_WIDTH, SCR_HEIGHT , "fonts/arial.ttf");
 
         //RenderText(textShader, "This is sample text", 2.0f, 2.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
         //RenderText(textShader, "(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));

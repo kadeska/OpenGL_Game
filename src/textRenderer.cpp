@@ -1,4 +1,9 @@
 #include "../include/textRenderer.hpp"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "../include/programLogger.hpp"
 using ProgramLogger::log;
 using ProgramLogger::LogLevel;
@@ -30,9 +35,20 @@ TextRenderer::~TextRenderer()
 {
 }
 
-int TextRenderer::renderText(std::string _text, Shader* shader, glm::vec3 color, float x, float y, float scale, std::string _fontFilePath)
+int TextRenderer::renderText(std::string _text, Shader* shader, glm::vec3 color, float x, float y, float scale, int _screenWidth, int _screenHeight, std::string _fontFilePath)
 {
     log("Rendering text");
+
+    // OpenGL state
+    // ------------
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(_screenWidth), 0.0f, static_cast<float>(_screenHeight));
+    shader->use();
+    glUniformMatrix4fv(glGetUniformLocation(shader->ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
     // FreeType
     // --------
     FT_Library ft;
