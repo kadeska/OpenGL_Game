@@ -52,11 +52,11 @@ void TextureLoader::loadTextures(Shader* _ourShader)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // load image, create texture and generate mipmaps
     
-    texData = stbi_load("textures/awesomeface.png", &width, &height, &nrChannels, 0);
+    texData = stbi_load("textures/gray-tree-bark-256x256.jpg", &width, &height, &nrChannels, 0);
     if (texData)
     {
         // note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texData);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -72,6 +72,6 @@ void TextureLoader::loadTextures(Shader* _ourShader)
     //glUniform1i(glGetUniformLocation(_ourShader->ID, "texture1"), 0);
     // or set it via the texture class
     _ourShader->setInt("texture1", 0);
-	//_ourShader->setInt("texture2", 1);
+	_ourShader->setInt("texture2", 1);
 
 }
