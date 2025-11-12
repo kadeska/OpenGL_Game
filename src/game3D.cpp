@@ -21,13 +21,13 @@ Game3D::Game3D()
 	myWindow.initialize(CAM_X, CAM_Y, CAM_Z);
 	myWindow.createWindow();
 	myWindow.loadOpenGL();
-	myWindow.createShaderProgram();
-	myWindow.initFreeType();
-	myWindow.configureFreeType();
+	//myWindow.createShaderProgram();
+	myWindow.createTextShader();
+	myWindow.setUpFreeType();
 
 	// Create world
-	myWorld = new World(myWindow.ourShader, WORLD_SEED, WORLD_SIZE);
-	myWorld->createWorld(0);
+	//myWorld = new World(myWindow.ourShader, WORLD_SEED, WORLD_SIZE);
+	//myWorld->createWorld(0);
 }
 
 Game3D::~Game3D()

@@ -16,22 +16,27 @@
 #include "../include/programLogger.hpp"
 using ProgramLogger::log;
 
-// FreeType
-// --------
-FT_Library ft;
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+
+
+// freeType stuff
+// Holds all state information relevant to a character as loaded using FreeType
 struct Character {
-    unsigned int TextureID;  // ID handle of the glyph texture
-    glm::ivec2   Size;       // Size of glyph
-    glm::ivec2   Bearing;    // Offset from baseline to left/top of glyph
-    unsigned int Advance;    // Offset to advance to next glyph
+    unsigned int TextureID; // ID handle of the glyph texture
+    glm::ivec2   Size;      // Size of glyph
+    glm::ivec2   Bearing;   // Offset from baseline to left/top of glyph
+    unsigned int Advance;   // Horizontal offset to advance to next glyph
 };
 
-std::map<char, Character> Characters;
+std::map<GLchar, Character> Characters;
+unsigned int textVAO, textVBO;
+Shader* textShader;
 
 
 // camera stuff
-
 
 Camera3D* myCamera;// = new Camera3D(glm::vec3(CAM_X, CAM_Y, CAM_Z));
 float lastX;
@@ -63,58 +68,36 @@ void Window::initialize(float _camX, float _camY, float _camZ)
 
     lastX = SCR_WIDTH / 2.0f;
     lastY = SCR_HEIGHT / 2.0f;
-
-
-
-    //initFreeType();
-    //configureFreeType();
-
-
-    // glm test
-   /* glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
-    glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
-    vec = trans * vec;
-    std::cout << vec.x << vec.y << vec.z << std::endl;*/
-
 }
 
 void Window::createShaderProgram()
 {
-    //shaderProgram = new ShaderProgram();
-	//shaderProgram->makeShaderProgram();
-
-    //Shader ourShader("", "");
 	ourShader = new Shader("shaders/vertexShader.vs", "shaders/fragmentShader.fs");
     ourShader->setUp();
 	textureLoader.loadTextures(ourShader);
+}
 
-
+void Window::createTextShader()
+{
+    // OpenGL state
+    // ------------
     glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    // compile and setup the shader
+    // ----------------------------
     textShader = new Shader("shaders/textVertexShader.vs", "shaders/textFragmentShader.fs");
-
-    // After creating textShader in Window::createShaderProgram
-    glGenVertexArrays(1, &textShader->textVAO);
-    glGenBuffers(1, &textShader->textVBO);
-    glBindVertexArray(textShader->textVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, textShader->textVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
     glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(SCR_WIDTH), 0.0f, static_cast<float>(SCR_HEIGHT));
     textShader->use();
     glUniformMatrix4fv(glGetUniformLocation(textShader->ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
 }
 
-int Window::initFreeType()
+int Window::setUpFreeType()
 {
+    // FreeType
+    // --------
+    FT_Library ft;
     // All functions return a value different than 0 whenever an error occurred
     if (FT_Init_FreeType(&ft))
     {
@@ -182,26 +165,27 @@ int Window::initFreeType()
             Characters.insert(std::pair<char, Character>(c, character));
         }
         glBindTexture(GL_TEXTURE_2D, 0);
+
+        return 0;
     }
     // destroy FreeType once we're finished
-    FT_Done_Face(face);
-    FT_Done_FreeType(ft);
-}
+    //FT_Done_Face(face);
+    //FT_Done_FreeType(ft);
 
-void Window::configureFreeType()
-{
+
     // configure VAO/VBO for texture quads
     // -----------------------------------
-    glGenVertexArrays(1, &textShader->textVAO);
-    glGenBuffers(1, &textShader->textVBO);
-    glBindVertexArray(textShader->textVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, textShader->textVBO);
+    glGenVertexArrays(1, &textVAO);
+    glGenBuffers(1, &textVBO);
+    glBindVertexArray(textVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, textVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
+
 
 void Window::createWindow()
 {
@@ -259,14 +243,21 @@ void Window::mainLoop(World* _world)
 		myCamera->applyGravity(deltaTime);
 		myCamera->updatePosition(deltaTime);
 
-		_world->setPlayerPos(myCamera->camPos);
+		//_world->setPlayerPos(myCamera->camPos);
 
 
-        _world->updateWorld();
+        //_world->updateWorld();
 
         // Rendering commands here
 		// ----------------------
-        render();
+
+        //glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //render();
+
+        RenderText(textShader, "This is sample text", 2.0f, 2.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+        RenderText(textShader, "(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
+
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -286,7 +277,7 @@ void Window::render()
 	// ------
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT/* | GL_DEPTH_BUFFER_BIT*/);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Activate and Bind Textures
     glActiveTexture(GL_TEXTURE0);
@@ -335,18 +326,21 @@ void Window::render()
     // -----------------------------
     
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    //textShader->setInt("text", 0); // Add this before rendering text
+    ////textShader->setInt("text", 0); // Add this before rendering text
 
-    // src/window.cpp (in render or after rendering 3D objects)
-    RenderText(textShader, "Hello World", 25.0f, 25.0f, 1.0f, glm::vec3(0.5f, 0.8f, 0.2f));
+    //// src/window.cpp (in render or after rendering 3D objects)
+    //RenderText(textShader, "Hello World", 25.0f, 25.0f, 1.0f, glm::vec3(0.5f, 0.8f, 0.2f));
 }
 
 
+// render line of text
+// -------------------
 void Window::RenderText(Shader* shader, std::string text, float x, float y, float scale, glm::vec3 color)
 {
+    //log("Rendering text...");
     // activate corresponding render state	
     shader->use();
     glUniform3f(glGetUniformLocation(shader->ID, "textColor"), color.x, color.y, color.z);
@@ -377,7 +371,7 @@ void Window::RenderText(Shader* shader, std::string text, float x, float y, floa
         // render glyph texture over quad
         glBindTexture(GL_TEXTURE_2D, ch.TextureID);
         // update content of VBO memory
-        glBindBuffer(GL_ARRAY_BUFFER, shader->textVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, textVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // be sure to use glBufferSubData and not glBufferData
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -386,6 +380,8 @@ void Window::RenderText(Shader* shader, std::string text, float x, float y, floa
         // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
         x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
     }
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Window::terminateWindow()

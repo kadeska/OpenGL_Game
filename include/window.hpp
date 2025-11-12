@@ -2,8 +2,7 @@
 
 #include <iostream>
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
+
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -42,7 +41,7 @@ public:
 	GLFWwindow* window;
 	//ShaderProgram* shaderProgram;
 	Shader* ourShader;
-	Shader* textShader;
+	//Shader* textShader;
 	TextureLoader textureLoader;
 
 	// functions
@@ -53,12 +52,12 @@ public:
 	void createWindow();
 	void loadOpenGL();
 	void createShaderProgram();
-	int initFreeType();
-	void configureFreeType();
+	void createTextShader();
+	int setUpFreeType();
 
 
 	void mainLoop(World* _world);
-	void RenderText(Shader* shader, std::string text, float x, float y, float scale, glm::vec3 color);
+	
 	void terminateWindow();
 
 	// ---------------------------------------------------
@@ -66,7 +65,15 @@ public:
 private:
 
 	void processInput(GLFWwindow* window, World* _world);
+
+	/*
+	Renders the 3D scene
+	*/
 	void render();
+	/*
+	Renders text to screen
+	*/
+	void RenderText(Shader* shader, std::string text, float x, float y, float scale, glm::vec3 color);
 
 };
 

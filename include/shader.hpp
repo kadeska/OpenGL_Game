@@ -17,7 +17,7 @@ public:
 	unsigned int ID;
 	unsigned int textVBO, textVAO, VBO, VAO, EBO;
 
-	Shader(const char* _vertexShaderPath, const char* _fragmentShaderPath);
+	Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
 	~Shader();
 
 	void setUp();
