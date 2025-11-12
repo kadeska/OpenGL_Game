@@ -40,8 +40,9 @@ public:
 
 	GLFWwindow* window;
 	//ShaderProgram* shaderProgram;
-	Shader* ourShader;
+	Shader* ourShader;// = new Shader("shaders/vertexShader.vs", "shaders/fragmentShader.fs");
 	//Shader* textShader;
+	//Shader* textShader = new Shader("shaders/textVertexShader.vs", "shaders/textFragmentShader.fs");
 	TextureLoader textureLoader;
 
 	// functions
@@ -52,12 +53,7 @@ public:
 	void createWindow();
 	void loadOpenGL();
 	void createShaderProgram();
-	void createTextShader();
-	int setUpFreeType();
-
-
 	void mainLoop(World* _world);
-	
 	void terminateWindow();
 
 	// ---------------------------------------------------
@@ -70,10 +66,6 @@ private:
 	Renders the 3D scene
 	*/
 	void render();
-	/*
-	Renders text to screen
-	*/
-	void RenderText(Shader* shader, std::string text, float x, float y, float scale, glm::vec3 color);
 
 };
 

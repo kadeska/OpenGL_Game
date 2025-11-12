@@ -48,6 +48,9 @@
     <ClCompile Include="src\entityCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\textRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\window.hpp">
@@ -92,6 +95,9 @@
     <ClInclude Include="include\programLogger.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\textRenderer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\awesomeface.png">
@@ -109,5 +115,8 @@
     <None Include="shaders\fragmentShader.fs" />
     <None Include="shaders\textFragmentShader.fs" />
     <None Include="shaders\textVertexShader.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="fonts\arial.ttf" />
   </ItemGroup>
 </Project>

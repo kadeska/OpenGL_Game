@@ -3,6 +3,8 @@
 #include "../include/shader.hpp"
 
 
+
+
 Window myWindow;
 World* myWorld;
 
@@ -21,9 +23,7 @@ Game3D::Game3D()
 	myWindow.initialize(CAM_X, CAM_Y, CAM_Z);
 	myWindow.createWindow();
 	myWindow.loadOpenGL();
-	//myWindow.createShaderProgram();
-	myWindow.createTextShader();
-	myWindow.setUpFreeType();
+	myWindow.createShaderProgram();
 
 	// Create world
 	//myWorld = new World(myWindow.ourShader, WORLD_SEED, WORLD_SIZE);

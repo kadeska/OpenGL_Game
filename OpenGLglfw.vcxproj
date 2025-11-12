@@ -167,6 +167,7 @@
     <ClCompile Include="src\window.cpp" />
     <ClCompile Include="src\textureLoader.cpp" />
     <ClCompile Include="src\world.cpp" />
+    <ClCompile Include="src\textRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\camera3D.hpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="include\textureLoader.hpp" />
     <ClInclude Include="include\world.hpp" />
     <ClInclude Include="include\worldData.hpp" />
+    <ClInclude Include="include\textRenderer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\awesomeface.png" />
@@ -194,6 +196,9 @@
     <None Include="shaders\textFragmentShader.fs" />
     <None Include="shaders\textVertexShader.vs" />
     <None Include="shaders\vertexShader.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="fonts\arial.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
