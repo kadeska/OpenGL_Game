@@ -52,7 +52,7 @@ void TextureLoader::loadTextures(Shader* _ourShader)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // load image, create texture and generate mipmaps
     
-    texData = stbi_load("textures/gray-tree-bark-256x256.jpg", &width, &height, &nrChannels, 0);
+    texData = stbi_load("textures/gray-tree-bark-64x64.jpg", &width, &height, &nrChannels, 0);
     if (texData)
     {
         // note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
