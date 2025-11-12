@@ -14,6 +14,7 @@
 #include "shader.hpp"
 #include "textureLoader.hpp"
 #include "../include/world.hpp"
+#include "../include/textRenderer.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
@@ -38,11 +39,18 @@ public:
 	const unsigned int SCR_WIDTH = 800;
 	const unsigned int SCR_HEIGHT = 600;
 
+	bool paused = false;
+	bool escPrevPressed = false;
+	bool spacePrevPressed = false;
+	bool toggleGravityPressed = false;
+
+
 	GLFWwindow* window;
-	//ShaderProgram* shaderProgram;
-	Shader* sceneShader;// = new Shader("shaders/vertexShader.vs", "shaders/fragmentShader.fs");
+	Shader* sceneShader;
 	Shader* textShader;
-	//Shader* textShader = new Shader("shaders/textVertexShader.vs", "shaders/textFragmentShader.fs");
+
+	TextRenderer textRenderer;
+
 	TextureLoader textureLoader;
 
 	// functions

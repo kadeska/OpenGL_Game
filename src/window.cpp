@@ -10,7 +10,7 @@
 #include "../include/textureLoader.hpp"
 #include "../include/camera3D.hpp"
 
-#include "../include/textRenderer.hpp"
+
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../include/stb_image.h"
@@ -132,11 +132,14 @@ void Window::mainLoop(World* _world)
         //glClear(GL_COLOR_BUFFER_BIT);
         render();
 
-        TextRenderer textRenderer;
-        textRenderer.renderText("Testing", textShader, glm::vec3(5.0f, 2.0f, 3.0f), 5.0f, 5.0f, 1.0f,SCR_WIDTH, SCR_HEIGHT , "fonts/arial.ttf");
+        if (paused) 
+        {
+            textRenderer.renderText("Paused", textShader, glm::vec3(5.0f, 2.0f, 3.0f), (SCR_WIDTH/2.0f) - 100, SCR_HEIGHT/2.0f, 1.0f, SCR_WIDTH, SCR_HEIGHT, "fonts/arial.ttf");
+        }
+        
 
-        textRenderer.renderText("This is sample text 1", textShader, glm::vec3(2.0f, 0.0f, 0.0f), 0.0f, 100.5f, 1, SCR_WIDTH, SCR_HEIGHT, "fonts/arial.ttf");
-        textRenderer.renderText("This is sample text 2", textShader, glm::vec3(20.0f, 0.0f, 0.0f), 0.0f, 50.5f, 1, SCR_WIDTH, SCR_HEIGHT, "fonts/arial.ttf");
+        //textRenderer.renderText("This is sample text 1", textShader, glm::vec3(2.0f, 0.0f, 0.0f), 0.0f, 100.5f, 1, SCR_WIDTH, SCR_HEIGHT, "fonts/arial.ttf");
+        //textRenderer.renderText("This is sample text 2", textShader, glm::vec3(20.0f, 0.0f, 0.0f), 0.0f, 50.5f, 1, SCR_WIDTH, SCR_HEIGHT, "fonts/arial.ttf");
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -224,10 +227,7 @@ void Window::terminateWindow()
     glfwTerminate();
 }
 
-bool paused = false;
-static bool escPrevPressed = false;
-static bool spacePrevPressed = false;
-static bool toggleGravityPressed = false;
+
 
 void Window::processInput(GLFWwindow* _window, World* _world)
 {
