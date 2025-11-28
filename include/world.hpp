@@ -55,9 +55,11 @@ public:
 
 
 	glm::vec3 getPlayerPos() { return playerLocation; }
+
+	// Returns value of inRangeOfInteractable
 	bool isInRangeOfInteracable();
 
-
+	// Checks if the player is within interactRange of the given entityPosition.
 	bool isInRange(glm::vec3 playerPosition, glm::vec3 entityPosition, float interactRange);
 
 	/*

@@ -8,7 +8,7 @@
 Window myWindow;
 World* myWorld;
 
-int WORLD_SIZE = 10;
+int WORLD_SIZE = 1;
 int WORLD_SEED = 0;
 
 float CAM_X = 0.0f;

@@ -81,9 +81,7 @@ void World::updateWorld()
 
 bool World::checkPlayerCollisions()
 {
-	// if the player is inside of a block, ignor check
-	//if (isPositionOccupied(playerLocation)) { return false; }
-
+	inRangeOfInteractable = false;
 
 	glm::vec3 playerPosSnapped = snapToGrid(playerLocation);
 
@@ -96,13 +94,9 @@ bool World::checkPlayerCollisions()
 		glm::vec3(0, 0, -1)  // -Z
 	};
 
-
-	
-
 	// check for physical collision here
-
 	for (int i = 0; i < 6; ++i) {
-		glm::vec3 checkPos = playerPosSnapped + directions[i];
+		glm::vec3 checkPos = getPlayerPos() + directions[i];
 		if (isPositionOccupied(checkPos)) {
 			log("Collision detected at position: (" +
 				std::to_string(checkPos.x) + ", " +
@@ -112,13 +106,10 @@ bool World::checkPlayerCollisions()
 		}
 	}
 
-
-
-
 	// check for interactibles 
 
 	// the closest interactable entity to the player
-	EntityCube closestInteractable;
+	//EntityCube closestInteractable;
 
 	// for each cube in the world (change to be for each interactable entity in the world)
 	for (EntityCube& cube : entityCubeVector) // changed to be a reference to improve performance by avoiding a copy
@@ -128,19 +119,12 @@ bool World::checkPlayerCollisions()
 		{
 			//log("Interactable");
 			// check if the player is withen range of an interactable cube
-			if (isInRange(playerLocation, cube.getEntityPosition(), 1.2f))
+			if (isInRange(getPlayerPos(), cube.getEntityPosition(), 1.2f))
 			{
 				log("In range of interactable: " + std::to_string(cube.getEntityID()));
 				inRangeOfInteractable = true;
 				//return;
 			}
-			else { inRangeOfInteractable = false; }
-			//else if (!isInRange(playerLocation, cube.getEntityPosition(), 1.2f))
-			//{
-			//	log("Not in range of interactable: " + std::to_string(cube.getEntityID()));
-			//	inRangeOfInteractable = false;
-			//	//return;
-			//}
 		}
 	}
 
@@ -236,7 +220,7 @@ bool World::isInRangeOfInteracable()
 
 bool World::isInRange(glm::vec3 playerPosition, glm::vec3 entityPosition, float interactRange) {
 	// Calculate the squared distance between player and entity
-	float distanceSquared = glm::distance(playerPosition, entityPosition);
+	float distanceSquared = glm::distance(snapToGrid(playerPosition), entityPosition);
 
 	// Compare the squared distance to the square of the interaction range to avoid square root
 	return distanceSquared <= (interactRange * interactRange);
