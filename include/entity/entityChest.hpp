@@ -40,6 +40,7 @@ private:
 	std::string inventoryFilename;
 	int inventorySize;
 	int seed;
+	int texID = 2;
 public:
 	bool interactable = true;
 	EntityChest(int _id, int _size, glm::vec3 _pos, std::string _inventoryFilename);
@@ -55,6 +56,11 @@ public:
 
 	void openInventory();
 	void saveInventory(Inventory _inventory);
+
+	inline int getTexID()
+	{
+		return texID;
+	}
 
 	inline Inventory getChestInventory()
 	{

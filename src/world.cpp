@@ -18,8 +18,6 @@ using ProgramLogger::LogLevel;
 EntityChest* closestChest;
 
 
-std::vector<EntityCube> entityCubeVector = std::vector<EntityCube>();
-std::vector<EntityChest> entityChestVector = std::vector<EntityChest>();
 
 // global cube ID counter
 int cubeID = 0;
@@ -35,6 +33,9 @@ int worldSize = 0;
 World::World(Shader* _shader) 
 {
 	worldShader = _shader;
+	entityCubeVector = std::vector<EntityCube>();
+	entityChestVector = std::vector<EntityChest>();
+
 }
 
 World::World(Shader* _shader, float seed, int _worldSize) 
@@ -42,6 +43,9 @@ World::World(Shader* _shader, float seed, int _worldSize)
 	worldShader = _shader;
 	worldSeed = seed;
 	worldSize = _worldSize;
+	entityCubeVector = std::vector<EntityCube>();
+	entityChestVector = std::vector<EntityChest>();
+
 }
 
 void World::createWorld(float seed)

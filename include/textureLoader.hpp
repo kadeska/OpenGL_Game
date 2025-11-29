@@ -5,11 +5,11 @@
 
 class TextureLoader
 {
+
 public:
-	unsigned int texture1, texture2;
-	// load image, create texture and generate mipmaps
-	int width, height, nrChannels;
-	unsigned char* texData;
+	std::unordered_map<std::string, GLuint> textures;
 	void loadTextures(Shader* _ourShader);
+	GLuint getTexture(const std::string& name);
+	int width, height, nrChannels;
 };
 

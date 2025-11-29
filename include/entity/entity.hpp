@@ -10,6 +10,7 @@ private:
 	std::string entityName = "";
 	glm::vec3 entityPosition;
 	bool useGravity = true;
+	int texID = 3;
 
 public:
 	BaseEntity();
@@ -24,6 +25,9 @@ public:
 	std::string getEntityName();
 	glm::vec3 getEntityPosition();
 	bool getUseGravity();
+
+	int getTexID();
+	
 
 
 

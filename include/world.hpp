@@ -12,7 +12,10 @@ class World
 {
 private:
 	glm::vec3 playerLocation;
-	bool inRangeOfInteractable = false; // Maybe this is a culprit??
+	bool inRangeOfInteractable = false;
+
+	std::vector<EntityCube> entityCubeVector;
+	std::vector<EntityChest> entityChestVector;
 
 public:
 	/*
@@ -68,6 +71,9 @@ public:
 
 	void interactWithObjectInRange();
 
+
+	std::vector<EntityCube> getEntityCubes() { return entityCubeVector; }
+	std::vector<EntityChest> getEntityChests() { return entityChestVector; }
 
 
 	/*

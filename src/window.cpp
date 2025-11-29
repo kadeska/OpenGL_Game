@@ -16,6 +16,9 @@
 #include "../include/programLogger.hpp"
 using ProgramLogger::log;
 
+#include "../include/vertexData.hpp"
+VertexData vertData;
+
 // camera stuff
 
 Camera3D* myCamera;// = new Camera3D(glm::vec3(CAM_X, CAM_Y, CAM_Z));
@@ -144,7 +147,8 @@ void Window::mainLoop(World* _world)
         // draw 3d scene
         // ----------------------------------------------------
 
-        render();
+        render(_world);
+		//renderCubes(_world);
 
 		// draw text over the scene
         // --------------------------------------------------------
@@ -176,7 +180,7 @@ void Window::mainLoop(World* _world)
     }
 }
 
-void Window::render() 
+void Window::render(World* _world)
 {
     // I call these settings every frame as these are important for 3D rendering. 
     // If I dont do these every frame for the 3D scen then the scen wont be rendered 
@@ -187,11 +191,11 @@ void Window::render()
     // no need to call setUp every frame. Only need to change the face ordering.
     //sceneShader->setUp();
 
-    // Activate and Bind Textures
-    glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textureLoader.texture1);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, textureLoader.texture2);
+ //   // Activate and Bind Textures
+ //   glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, textureLoader.getTexture("texture1"));
+ //   glActiveTexture(GL_TEXTURE1);
+ //   glBindTexture(GL_TEXTURE_2D, textureLoader.getTexture("texture2"));
 
 	// Use shader program
 	sceneShader->use();
@@ -211,18 +215,66 @@ void Window::render()
 
     glBindVertexArray(sceneShader->VAO);
     
-    for (unsigned int i = 0; i < sceneShader->vertData.cubePositions.size(); i++)
+    for (EntityCube& cube : _world->getEntityCubes())
     {
-        // calculate the model matrix for each object and pass it the shader before drawing
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, cube.getTexID()); 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, sceneShader->getCubeAt(i));
-        float angle = 0; // 20.0f * i;
-        //model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+        model = glm::translate(model, cube.getEntityPosition()); 
         sceneShader->setMat4("model", model);
-
+        glBindVertexArray(sceneShader->VAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    }
+    for (EntityChest& chest : _world->getEntityChests())
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, chest.getTexID());
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, chest.getEntityPosition());
+        sceneShader->setMat4("model", model);
+        glBindVertexArray(sceneShader->VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
     }
 }
+
+void Window::renderCubes(World* _world) {
+    //glFrontFace(GL_CW);
+    //// Activate and Bind Textures
+    //glActiveTexture(GL_TEXTURE0);
+    //glBindTexture(GL_TEXTURE_2D, textureLoader.getTexture("texture1"));
+    //glActiveTexture(GL_TEXTURE1);
+    //glBindTexture(GL_TEXTURE_2D, textureLoader.getTexture("texture2"));
+
+    //sceneShader->use(); // Use your shader program
+
+    //glm::mat4 projection = glm::perspective(glm::radians(myCamera->camZoomLevel), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+    //sceneShader->setMat4("projection", projection);
+
+
+
+    //for (EntityCube& cube : _world->getEntityCubes()) {
+    //    // Bind the texture for this cube
+    //    glActiveTexture(GL_TEXTURE0); // Activate texture unit 0
+    //    glBindTexture(GL_TEXTURE_2D, cube.textureID); // Bind the texture associated with the cube
+
+    //    // Set up transformations, if required
+    //    glm::mat4 model = glm::mat4(1.0f); // Identity matrix
+    //    //model = glm::translate(model, cube.location); // Translate to the cube's location
+
+    //    // Assuming you have a uniform for the model matrix in your shader
+    //    GLuint modelLoc = glGetUniformLocation(sceneShader->ID, "model");
+    //    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+    //    // Draw the cube
+    //    glBindVertexArray(sceneShader->VAO); // Bind the VAO of the cube
+
+    //    // Draw the cube (assuming it's made of triangles)
+    //    glDrawArrays(GL_TRIANGLES, 0, 36); // 36 vertices for a cube
+    //}
+}
+
 
 void Window::terminateWindow()
 {

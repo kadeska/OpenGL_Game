@@ -11,67 +11,56 @@
 
 void TextureLoader::loadTextures(Shader* _ourShader)
 {
-    // load and create a texture 
-    // -------------------------
-    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-    // Texture 1
-	// ---------
+    // Load and create a texture
+    stbi_set_flip_vertically_on_load(true); // Flip textures vertically
 
+    // Texture 1
+    GLuint texture1;
     glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    
-    texData = stbi_load("textures/container.jpg", &width, &height, &nrChannels, 0);
-    
-    if (texData)
-    {
+
+    unsigned char* texData = stbi_load("textures/container.jpg", &width, &height, &nrChannels, 0);
+    if (texData) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texData);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
+    else {
+        std::cout << "Failed to load texture: container.jpg" << std::endl;
     }
     stbi_image_free(texData);
+    textures["container"] = texture1; // Store texture in the map
 
-    // texture 2
-	// ---------
-
+    // Texture 2
+    GLuint texture2;
     glGenTextures(1, &texture2);
     glBindTexture(GL_TEXTURE_2D, texture2);
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load image, create texture and generate mipmaps
-    
+
     texData = stbi_load("textures/gray-tree-bark-64x64.jpg", &width, &height, &nrChannels, 0);
-    if (texData)
-    {
-        // note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
+    if (texData) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texData);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
+    else {
+        std::cout << "Failed to load texture: gray-tree-bark-64x64.jpg" << std::endl;
     }
     stbi_image_free(texData);
+    textures["bark"] = texture2; // Store texture in the map
 
-    // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
-    // -------------------------------------------------------------------------------------------
-    _ourShader->use(); // don't forget to activate/use the shader before setting uniforms!
-    // either set it manually like so:
-    //glUniform1i(glGetUniformLocation(_ourShader->ID, "texture1"), 0);
-    // or set it via the texture class
+    // Set texture samplers in the shader
+    _ourShader->use();
     _ourShader->setInt("texture1", 0);
-	//_ourShader->setInt("texture2", 1);
+    _ourShader->setInt("texture2", 1);
 
+}
+
+GLuint TextureLoader::getTexture(const std::string& name) {
+    return textures[name]; // Return the texture ID
 }

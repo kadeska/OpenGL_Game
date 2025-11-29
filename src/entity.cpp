@@ -42,6 +42,11 @@ bool BaseEntity::getUseGravity()
 	return useGravity;
 }
 
+int BaseEntity::getTexID()
+{
+	return texID;
+}
+
 
 
 BaseEntity::BaseEntity()
