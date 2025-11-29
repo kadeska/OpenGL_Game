@@ -285,13 +285,13 @@ void Window::processInput(GLFWwindow* _window, World* _world)
     toggleGravityPressed = toggleGravity;
 
 
-	// C key edge detection for spawning interactable
+	// C key edge detection for spawning a chest
 
     bool spawnInteractable = glfwGetKey(_window, GLFW_KEY_C) == GLFW_PRESS;
     if (spawnInteractable && !spawnInteractablePressed)
     {
         
-        _world->spawnInteractableAt(_world->getPlayerPos() + glm::vec3(2.0f, 0.0f, 0.0f));
+        _world->spawnChestAt(_world->getPlayerPos() + glm::vec3(2.0f, 0.0f, 0.0f));
     }
     spawnInteractablePressed = spawnInteractable;
     

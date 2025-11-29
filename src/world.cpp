@@ -177,12 +177,12 @@ void World::spawnEntityCubeAt(glm::vec3 _pos)
 	}
 }
 
-void World::spawnInteractableAt(glm::vec3 _pos)
+void World::spawnChestAt(glm::vec3 _pos)
 {
 	glm::vec3 snappedPos = snapToGrid(_pos);
 	if (!isPositionOccupied(snappedPos))
 	{
-		log("Spawning interatable");
+		log("Spawning chest");
 		//EntityCube interactable(cubeID, snappedPos);
 		//interactable.setIsInteractable(true);
 		//addCube(interactable);
