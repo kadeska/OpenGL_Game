@@ -10,15 +10,21 @@
 
 
 
+
+
 using ProgramLogger::log;
 using ProgramLogger::LogLevel;
 
 
 //bool inRangeOfInteractable = false;
-EntityCube* closestInteractable;
+
+EntityChest* closestChest;
 
 
 std::vector<EntityCube> entityCubeVector = std::vector<EntityCube>();
+std::vector<EntityChest> entityChestVector = std::vector<EntityChest>();
+
+// global cube ID counter
 int cubeID = 0;
 
 
@@ -109,22 +115,19 @@ bool World::checkPlayerCollisions()
 
 	// check for interactibles 
 
-	// the closest interactable entity to the player
-	//EntityCube closestInteractable;
-
 	// for each cube in the world (change to be for each interactable entity in the world)
-	for (EntityCube& cube : entityCubeVector) // changed to be a reference to improve performance by avoiding a copy
+	for (EntityChest& chest : entityChestVector) // changed to be a reference to improve performance by avoiding a copy
 	{
 		// if the entity is interactable. (can be removed once I make a vector of interacables)
-		if (cube.getIsInteractable())
+		if (chest.getInteractable())
 		{
 			//log("Interactable");
 			// check if the player is withen range of an interactable cube
-			if (isInRange(getPlayerPos(), cube.getEntityPosition(), 1.2f))
+			if (isInRange(getPlayerPos(), chest.getEntityPosition(), 1.2f))
 			{
-				log("In range of interactable: " + std::to_string(cube.getEntityID()), LogLevel::DEBUG);
+				//log("In range of interactable: " + std::to_string(chest.getEntityID()));
 				inRangeOfInteractable = true;
-				closestInteractable = &cube;
+				closestChest = &chest;
 				//return;
 			}
 		}
@@ -142,6 +145,18 @@ void World::addCube(EntityCube _cube)
 		{
 			entityCubeVector.push_back(_cube);
 			worldShader->vertData.cubePositions.push_back(_cube.getEntityPosition());
+		}
+	}
+}
+
+void World::addChest(EntityChest& _chest) 
+{
+	if (_chest.getEntityID() != -1)
+	{
+		if (!isPositionOccupied(_chest.getEntityPosition()))
+		{
+			entityChestVector.push_back(_chest);
+			worldShader->vertData.cubePositions.push_back(_chest.getEntityPosition());
 		}
 	}
 }
@@ -171,15 +186,18 @@ void World::spawnInteractableAt(glm::vec3 _pos)
 		//EntityCube interactable(cubeID, snappedPos);
 		//interactable.setIsInteractable(true);
 		//addCube(interactable);
-		addCube(EntityCube(cubeID, snappedPos));
+		//addCube(EntityCube(cubeID, snappedPos));
+		EntityChest chest = EntityChest(cubeID, 5, snappedPos, "testChest.txt");
+		chest.generateRandomInventory();
+		addChest(chest);
 
-		for (int i = 0; i < entityCubeVector.size(); i++) 
-		{
-			if (entityCubeVector.at(i).getEntityID() == cubeID)
-			{
-				entityCubeVector.at(i).setIsInteractable(true);
-			}
-		}
+		//for (int i = 0; i < entityChestVector.size(); i++) 
+		//{
+		//	if (entityChestVector.at(i).getEntityID() == cubeID)
+		//	{
+		//		entityChestVector.at(i).setIsInteractable(true);
+		//	}
+		//}
 
 		cubeID++;
 	}
@@ -210,6 +228,18 @@ bool World::isPositionOccupied(glm::vec3 _pos)
 			return true;
 		}*/
 	}
+
+	for (EntityChest& chest : entityChestVector)
+	{
+		X2 = static_cast<int>(chest.getEntityPosition().x);
+		Y2 = static_cast<int>(chest.getEntityPosition().y);
+		Z2 = static_cast<int>(chest.getEntityPosition().z);
+		if (X1 == X2 && Y1 == Y2 && Z1 == Z2)
+		{
+			log("Position is already occupied.", LogLevel::DEBUG);
+			return true;
+		}
+	}
 	return false;
 }
 
@@ -229,10 +259,11 @@ bool World::isInRange(glm::vec3 playerPosition, glm::vec3 entityPosition, float 
 
 void World::interactWithObjectInRange()
 {
-	if (getInRangeOfInteracable() && closestInteractable->getEntityID() != -1)
+	if (getInRangeOfInteracable() && closestChest->getEntityID() != -1)
 	{
-		log("Interacting with object ID: " + std::to_string(closestInteractable->getEntityID()));
+		log("Interacting with object ID: " + std::to_string(closestChest->getEntityID()));
 		// Perform interaction logic here
+		closestChest->openInventory();
 	}
 	//log("Interacting with object ID: " + std::to_string(closestInteractable->getEntityID()));
 }

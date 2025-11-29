@@ -1,8 +1,9 @@
 #pragma once
 
 
-#include "../include/shader.hpp"
-#include "../include/entity/EntityCube.hpp"
+#include "shader.hpp"
+#include "entity/EntityCube.hpp"
+#include "entity/entityChest.hpp"
 
 #include "camera3D.hpp"
 
@@ -37,6 +38,8 @@ public:
 	// an uninisialized cube entity. EntityCube must be initialized 
 	// using its parameterized constructor.
 	void addCube(EntityCube _cube);
+
+	void addChest(EntityChest& _chest);
 
 	void setPlayerPos(glm::vec3 _Playerpos);
 

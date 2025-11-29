@@ -156,6 +156,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\entityChest.cpp" />
     <ClCompile Include="src\camera3D.cpp" />
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\entityCube.cpp" />
@@ -170,9 +171,11 @@
     <ClCompile Include="src\textRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\entity\entityChest.hpp" />
     <ClInclude Include="include\camera3D.hpp" />
     <ClInclude Include="include\entity\entity.hpp" />
     <ClInclude Include="include\entity\EntityCube.hpp" />
+    <ClInclude Include="include\FileManager.hpp" />
     <ClInclude Include="include\game3D.hpp" />
     <ClInclude Include="include\fragmentShaderSource.hpp" />
     <ClInclude Include="include\programLogger.hpp" />

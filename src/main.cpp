@@ -5,6 +5,10 @@
 #include "../include/programLogger.hpp"
 
 
+// for testing
+//#include "../include/FileManager.hpp"
+
+
 //#include <ft2build.h>
 //#include FT_FREETYPE_H
 
