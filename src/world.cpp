@@ -187,8 +187,9 @@ void World::spawnInteractableAt(glm::vec3 _pos)
 		//interactable.setIsInteractable(true);
 		//addCube(interactable);
 		//addCube(EntityCube(cubeID, snappedPos));
-		EntityChest chest = EntityChest(cubeID, 5, snappedPos, "testChest.txt");
+		EntityChest chest = EntityChest(cubeID, 5, snappedPos, std::to_string(cubeID) + "testChest.txt");
 		chest.generateRandomInventory();
+		chest.saveInventory(chest.getChestInventory());
 		addChest(chest);
 
 		//for (int i = 0; i < entityChestVector.size(); i++) 

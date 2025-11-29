@@ -18,6 +18,7 @@ Inventory::Inventory(int _id, int _size, std::vector<ItemType>& items)
 EntityChest::EntityChest(int _id, int _size, glm::vec3 _pos, std::string _inventoryFilename)
 {
 	log("creating EntityChest... ");
+	generateEmptyInventory();
 	this->setEntityID(_id);
 	this->setEntityPosition(_pos);
 	this->inventorySize = _size;
@@ -28,7 +29,7 @@ void EntityChest::generateEmptyInventory()
 {
 	log("Creating empty inventory ... ");
 	std::vector<ItemType> items = std::vector<ItemType>{ItemType::EMPTY};
-	chestInventory = new Inventory(this->getEntityID(), (int)items.size(), items);
+	chestInventory = Inventory(this->getEntityID(), (int)items.size(), items);
 }
 
 void EntityChest::generateRandomInventory()
@@ -40,7 +41,7 @@ void EntityChest::generateRandomInventory()
 		ItemType::FOOD,
 		ItemType::GOLD
 	};
-	chestInventory = new Inventory(this->getEntityID(), (int)items.size(), items);
+	chestInventory = Inventory(this->getEntityID(), (int)items.size(), items);
 }
 
 void EntityChest::generateInventoryFromFile()
@@ -53,7 +54,7 @@ void EntityChest::generateInventoryFromFile()
 	// read inventory file and load to data string
 	readInventoryFromFile(this->inventoryFilename, data);
 	// finaly set the chest inventory with the data string that was read from file
-	this->chestInventory = new Inventory(this->getEntityID(), (int)items.size(), items);
+	this->chestInventory = Inventory(this->getEntityID(), (int)items.size(), items);
 }
 
 void EntityChest::setInventorySize(int _size)
@@ -79,7 +80,8 @@ void EntityChest::openInventory()
 	}
 }
 
-void EntityChest::saveInventory(std::string& _inventoryData)
+void EntityChest::saveInventory(Inventory _inventory)
 {
-	saveInventoryToFile(this->inventoryFilename, _inventoryData);
+	std::string data = convertInventoryToString(*&_inventory.getItems());
+	saveInventoryToFile(this->inventoryFilename, data);
 }

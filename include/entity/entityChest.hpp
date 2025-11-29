@@ -35,7 +35,8 @@ public:
 class EntityChest : public BaseEntity
 {
 private:
-	Inventory* chestInventory;
+	std::vector<ItemType> initialInv = { ItemType::EMPTY };
+	Inventory chestInventory = Inventory(-1, 0, initialInv);
 	std::string inventoryFilename;
 	int inventorySize;
 	int seed;
@@ -51,15 +52,17 @@ public:
 	void setInventorySize(int _size);
 
 	int getInventorySize();
-	std::vector<ItemType> getInventoryItems();
 
 	void openInventory();
-	void saveInventory(std::string& _inventoryData);
+	void saveInventory(Inventory _inventory);
 
-
+	inline Inventory getChestInventory()
+	{
+		return chestInventory;
+	}
 	inline std::vector<ItemType> getChestInventoryItems()
 	{
-		return chestInventory->getItems();
+		return chestInventory.getItems();
 	}
 
 	inline void setInteractable(bool _interactable)

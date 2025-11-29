@@ -19,7 +19,7 @@ namespace FileManager
 		log("Saving data to file: " + filename);
 
             // Create an output file stream
-            std::ofstream outFile(filename);
+            std::ofstream outFile("data/" + filename);
 
             // Check if the file is open
             if (outFile.is_open()) {
