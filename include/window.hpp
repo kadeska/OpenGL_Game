@@ -73,8 +73,7 @@ private:
 	/*
 	Renders the 3D scene
 	*/
-	void render(World* _world);
-	void renderCubes(World* _world);
+	void renderScene(World* _world);
 
 };
 
