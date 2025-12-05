@@ -1,18 +1,20 @@
-#include "../include/textRenderer.hpp"
-
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <map>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+#include "../include/textRenderer.hpp"
 
 #include "../include/programLogger.hpp"
 using ProgramLogger::log;
 using ProgramLogger::LogLevel;
 
 
-#include <map>
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 /// Holds all state information relevant to a character as loaded using FreeType
 struct Character {

@@ -1,21 +1,9 @@
 #include <iostream>
 
+#include <glad/glad.h>
+
 #include "../include/game3D.hpp"
-
 #include "../include/programLogger.hpp"
-
-
-// for testing
-//#include "../include/FileManager.hpp"
-
-
-//#include <ft2build.h>
-//#include FT_FREETYPE_H
-
-//int loadFreeType();
-
-
-
 using::ProgramLogger::log;
 using::ProgramLogger::LogLevel;
 
@@ -31,7 +19,7 @@ void printMaxVertexAttributes()
 	log("Maximum number of vertex attributes supported: " + std::to_string(nrAttributes));
 }
 
-int main()
+int main(int argc, char* argv[])
 {
 	//loadFreeType();
 

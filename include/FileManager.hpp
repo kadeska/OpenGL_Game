@@ -2,7 +2,6 @@
 using ProgramLogger::log;
 using ProgramLogger::LogLevel;
 
-#include <iostream>
 #include <fstream>
 #include <string>
 

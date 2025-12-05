@@ -1,8 +1,6 @@
 #include "../include/game3D.hpp"
-
-//#include "../include/shader.hpp"
-
-
+#include "../include/window.hpp"
+#include "../include/world.hpp"
 
 
 Window myWindow;
@@ -27,7 +25,7 @@ Game3D::Game3D()
 	myWindow.loadTextures();
 
 	// Create world
-	myWorld = new World(myWindow.sceneShader, WORLD_SEED, WORLD_SIZE);
+	myWorld = new World(myWindow.getSceneShader(), WORLD_SEED, WORLD_SIZE);
 	//myWorld->createWorld(0);
 	myWorld->generateWorld(WORLD_SEED);
 }

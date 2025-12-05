@@ -1,11 +1,52 @@
+#include <glm/glm.hpp>
+#include <glm/ext/matrix_transform.hpp>
+
 #include "../include/camera3D.hpp"
 
-//#include "world.hpp"
 
-Camera3D::Camera3D(glm::vec3 _pos, glm::vec3 _up, float _yaw, float _pitch) 
-	: camFront(glm::vec3(0.0f, 0.0f, -1.0f)), camMovementSpeed(SPEED), 
-	camMouseSensitivity(SENSITIVITY), camZoomLevel(ZOOM)
+
+
+// camera attibutes
+
+// Default camera values.
+const float YAW = 45.0f;
+const float PITCH = -30.0f;
+const float SPEED = 2.5f;
+const float SENSITIVITY = 0.1f;
+const float ZOOM = 45.0f;
+
+glm::vec3 camPos;
+glm::vec3 camFront;
+glm::vec3 camUp;
+glm::vec3 camRight;
+glm::vec3 worldUp;
+
+// euler angles
+float camYaw;
+float camPitch;
+
+// cam options
+float camMovementSpeed;
+float camMouseSensitivity;
+float camZoomLevel;
+float collisionRadius = 0.4f;
+float interactRadius = 1.3f;
+
+// physics attributes
+
+glm::vec3 velocity = glm::vec3(0.0f);
+bool useGravity = false;
+float gravity = -4.5f;
+bool onGround = false;
+
+
+Camera3D::Camera3D(glm::vec3 _pos, glm::vec3 _up, const float _yaw, const float _pitch)
 {
+	camFront = glm::vec3(0.0f, 0.0f, -1.0f);
+	camMovementSpeed = SPEED;
+	camMouseSensitivity = SENSITIVITY;
+	camZoomLevel = ZOOM;
+
 	camPos = _pos;
 	worldUp = _up;
 	camYaw = _yaw;
@@ -13,9 +54,13 @@ Camera3D::Camera3D(glm::vec3 _pos, glm::vec3 _up, float _yaw, float _pitch)
 	updateCameraVectors();
 }
 
-Camera3D::Camera3D(float _posX, float _posY, float _posZ, float _upX, float _upY, float _upZ, float _yaw, float _pitch) 
-	: camFront(glm::vec3(0.0f, 0.0f, -1.0f)), camMovementSpeed(SPEED), camMouseSensitivity(SENSITIVITY), camZoomLevel(ZOOM)
+Camera3D::Camera3D(float _posX, float _posY, float _posZ, float _upX, float _upY, float _upZ, float _yaw, float _pitch)
 {
+	camFront = glm::vec3(0.0f, 0.0f, -1.0f);
+	camMovementSpeed = SPEED;
+	camMouseSensitivity = SENSITIVITY;
+	camZoomLevel = ZOOM;
+
 	camPos = glm::vec3(_posX, _posY, _posZ);
 	worldUp = glm::vec3(_upX, _upY, _upZ);
 	camYaw = _yaw;
@@ -27,31 +72,6 @@ glm::mat4 Camera3D::GetViewMatrix()
 {
 	return glm::lookAt(camPos, camPos + camFront, camUp);
 }
-
-
-//void Camera3D::ProcessKeyboard(Camera_Movement _direction, float _deltaTime)
-//{
-//	float velocity = camMovementSpeed * _deltaTime;
-//	glm::vec3 moveVec(0.0f);
-//
-//	if (_direction == FORWARD)
-//		moveVec = camFront * velocity;
-//	if (_direction == BACKWARD)
-//		moveVec = -camFront * velocity;
-//	if (_direction == LEFT)
-//		moveVec = -camRight * velocity;
-//	if (_direction == RIGHT)
-//		moveVec = camRight * velocity;
-//
-//	glm::vec3 intendedPos = camPos + moveVec;
-//	glm::vec3 gridIntendedPos = world->snapToGrid(intendedPos);
-//
-//	// Only move if the intended position is not occupied
-//	if (!world->isPositionOccupied(gridIntendedPos)) {
-//		camPos = intendedPos;
-//	}
-//	// else: do nothing, player stays in place
-//}
 
 void Camera3D::ProcessMouseMovement(float _xOffset, float _yOffset, GLboolean constrainPitch)
 {
@@ -113,7 +133,7 @@ void Camera3D::updatePosition(float _deltaTime)
 void Camera3D::updateCameraVectors()
 {
 	// calculate the new Front vector
-	glm::vec3 front = glm::vec3(0.0f,0.0f,0.0f);
+	glm::vec3 front = glm::vec3(0.0f, 0.0f, 0.0f);
 	front.x = cos(glm::radians(camYaw)) * cos(glm::radians(camPitch));
 	front.y = sin(glm::radians(camPitch));
 	front.z = sin(glm::radians(camYaw)) * cos(glm::radians(camPitch));
@@ -122,3 +142,70 @@ void Camera3D::updateCameraVectors()
 	camRight = glm::normalize(glm::cross(camFront, worldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
 	camUp = glm::normalize(glm::cross(camRight, camFront));
 }
+
+
+glm::vec3 Camera3D::getCamPos()
+{
+	return camPos;
+}
+
+void Camera3D::setCamPos(glm::vec3 _newPos)
+{
+	camPos = _newPos;
+}
+
+glm::vec3 Camera3D::getCamFront()
+{
+	return camFront;
+}
+
+glm::vec3 Camera3D::getCamUp()
+{
+	return camUp;
+}
+
+glm::vec3 Camera3D::getCamRight()
+{
+	return camRight;
+}
+
+glm::vec3 Camera3D::getWorldUp()
+{
+	return worldUp;
+}
+
+float Camera3D::getCamZoom()
+{
+	return camZoomLevel;
+}
+
+bool Camera3D::getUseGravity()
+{
+	return useGravity;
+}
+
+void Camera3D::setUseGravity(bool _useGravity)
+{
+	useGravity = _useGravity;
+}
+
+float Camera3D::getCamMovementSpeed()
+{
+	return camMovementSpeed;
+}
+
+float Camera3D::getCamMouseSensitivity()
+{
+	return camMouseSensitivity;
+}
+
+float Camera3D::getCollisionRadius()
+{
+	return collisionRadius;
+}
+
+float Camera3D::getInteractionRange()
+{
+	return interactRadius;
+}
+

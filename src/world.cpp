@@ -1,12 +1,11 @@
-#include "../include/world.hpp"
-#include "../include/vertexData.hpp"
-#include "../include/worldData.hpp"
-
-#include "../include/programLogger.hpp"
-
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <cmath>
+
+#include "../include/world.hpp"
+#include "../include/programLogger.hpp"
+#include "../include/vertexData.hpp"
+
+
+
 
 
 using ProgramLogger::log;
@@ -19,8 +18,8 @@ static const float INTERACT_RANGE = 1.5f;
 //bool inRangeOfInteractable = false;
 
 EntityChest closestChest;
-
-EntityChest newChest;// = EntityChest(-1, 0, glm::vec3(0, 0, 0), "null");
+EntityChest* chestPtr;
+EntityChest* newChest;// = EntityChest(-1, 0, glm::vec3(0, 0, 0), "null");
 
 
 // global cube ID counter
@@ -34,7 +33,7 @@ float worldSeed = 0.0f;
 int worldSize = 0;
 
 
-World::World(Shader* _shader) 
+World::World(Shader*& _shader) 
 {
 	worldShader = _shader;
 	entityCubeVector = std::vector<EntityCube>();
@@ -182,14 +181,14 @@ void World::addCube(EntityCube _cube)
 	}
 }
 
-void World::addChest(EntityChest& _chest) 
+void World::addChest(EntityChest*& _chest) 
 {
-	if (_chest.getEntityID() != -1)
+	if (_chest->getEntityID() != -1)
 	{
-		if (!isPositionOccupied(_chest.getEntityPosition()))
+		if (!isPositionOccupied(_chest->getEntityPosition()))
 		{
-			entityChestVector.push_back(_chest);
-			worldShader->vertData.cubePositions.push_back(_chest.getEntityPosition());
+			entityChestVector.push_back(*_chest);
+			worldShader->vertData.cubePositions.push_back(_chest->getEntityPosition());
 		}
 	}
 }
@@ -217,7 +216,9 @@ void World::spawnChestAt(glm::vec3 _pos)
 	{
 		log("Spawning chest");
 
-		addChest(createChestAt(snappedPos, 5));
+		// Fix: Store the pointer in a local variable, then pass the reference to addChest
+		chestPtr = createChestAt(snappedPos, 5);
+		addChest(chestPtr);
 
 		objectID++;
 	}
@@ -283,16 +284,17 @@ void World::interactWithObjectInRange()
 	{
 		log("Interacting with object ID: " + std::to_string(closestChest.getEntityID()));
 		// Perform interaction logic here
-		closestChest.toggleInventory();
+		//closestChest.toggleInventory();
+		closestChest.getChestInventory().showInventory = !closestChest.getChestInventory().showInventory;
 		//closestChest.getChestInventory().setShowInv(true);
 	}
 	//log("Interacting with object ID: " + std::to_string(closestInteractable->getEntityID()));
 }
 
-EntityChest& World::createChestAt(glm::vec3 _pos, int _size)
+EntityChest* World::createChestAt(glm::vec3 _pos, int _size)
 {
-	newChest = EntityChest(objectID++, _size, _pos, std::to_string(objectID) + ".inventory");
-	newChest.generateRandomInventory();
+	newChest = new EntityChest(objectID++, _size, _pos, std::to_string(objectID) + "inventory.txt");
+	newChest->generateRandomInventory();
 	return newChest;
 }
 

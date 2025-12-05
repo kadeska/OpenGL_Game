@@ -1,6 +1,9 @@
+#include <fstream>
+#include <sstream>
+#include <iostream>
+#include <glad/glad.h>
+
 #include "../include/shader.hpp"
-
-
 
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath)

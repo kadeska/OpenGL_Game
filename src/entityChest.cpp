@@ -1,17 +1,24 @@
+
 #include "../include/entity/entityChest.hpp"
 
 #include "../include/FileManager.hpp"
 using FileManager::saveInventoryToFile;
 using FileManager::readInventoryFromFile;
 
-Inventory::Inventory(int _id, int _size, std::vector<ItemType>& _items)
-{
-	inventoryID = _id;
-	inventorySize = _size;
-	items = _items;
-	setShowInv(false);
-	
-}
+#include "../include/programLogger.hpp"
+using ProgramLogger::log;
+using ProgramLogger::LogLevel;
+
+
+
+//Inventory::Inventory(int _id, int _size, std::vector<ItemType>& _items)
+//{
+//	inventoryID = _id;
+//	inventorySize = _size;
+//	items = _items;
+//	setShowInv(false);
+//	
+//}
 
 EntityChest::EntityChest(int _id, int _size, glm::vec3 _pos, std::string _inventoryFilename)
 {
@@ -72,21 +79,20 @@ int EntityChest::getInventorySize()
 	}
 	return inventorySize;
 }
-bool toggleInv = false;
 void EntityChest::toggleInventory()
 {
 	
-	if(toggleInv)
+	if(getChestInventory().showInv())
 	{
 		log("Closing inventory of ID: " + std::to_string(getChestInventory().getInventoryID()));
 		getChestInventory().setShowInv(false);
-		toggleInv = false;
+		//toggleInv = false;
 		return;
 	} else 
 	{
 		log("Opening inventory of ID: " + std::to_string(getChestInventory().getInventoryID()));
 		getChestInventory().setShowInv(true);
-		toggleInv = true;
+		//toggleInv = true;
 		for (ItemType item : getChestInventoryItems())
 		{
 			log("Inventory contents: " + std::to_string((int)item));

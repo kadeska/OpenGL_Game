@@ -1,15 +1,16 @@
-#include "../include/textureLoader.hpp"
-
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include "../include/stb_image.h"
-
 #include <string>
 #include <iostream>
+#include <glad/glad.h>
+
+#include "../include/stb_image.h"
+
+#include "../include/textureLoader.hpp"
+#include "../include/shader.hpp"
 
 
-void TextureLoader::loadTextures(Shader* _ourShader)
+
+
+void TextureLoader::loadTextures(Shader*& _ourShader)
 {
     // Load and create a texture
     stbi_set_flip_vertically_on_load(true); // Flip textures vertically

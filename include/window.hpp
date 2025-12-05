@@ -1,22 +1,9 @@
 #pragma once
 
-#include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-//#include "../include/shaderProgram.hpp"
+#include "world.hpp"
 #include "shader.hpp"
-#include "textureLoader.hpp"
-#include "../include/world.hpp"
-#include "../include/textRenderer.hpp"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-
+#include <GLFW/glfw3.h>
 
 /*
  Class: Window
@@ -44,13 +31,13 @@ public:
 	bool interactPressed = false;
 
 
-	GLFWwindow* window;
-	Shader* sceneShader;
-	Shader* textShader;
+	//GLFWwindow* window;
+	//Shader* sceneShader;
+	//Shader* textShader;
 
-	TextRenderer textRenderer;
+	//TextRenderer textRenderer;
 
-	TextureLoader textureLoader;
+	//TextureLoader textureLoader;
 
 	// functions
 	// Must call these functions in this spacific order.
@@ -63,12 +50,15 @@ public:
 	void loadTextures();
 	void mainLoop(World* _world);
 	void terminateWindow();
+	Shader* getSceneShader();
+	Shader* getTextShader();
+
 
 	// ---------------------------------------------------
 
 private:
 
-	void processInput(GLFWwindow* window, World* _world);
+	void processInput(GLFWwindow*& window, World*& _world);
 
 	/*
 	Renders the 3D scene

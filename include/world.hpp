@@ -1,12 +1,10 @@
 #pragma once
 
+#include <glm/glm.hpp>
 
 #include "shader.hpp"
 #include "entity/EntityCube.hpp"
 #include "entity/entityChest.hpp"
-
-#include "camera3D.hpp"
-
 
 class World
 {
@@ -23,7 +21,7 @@ public:
 	 The default world will be a simple flat terrain with no special features.
 	 Pass a Shader object pointer to be used for rendering the world.
 	*/
-	World(Shader* _shader);
+	World(Shader*& _shader);
 	/*
 	 Parameterized constructor that allows setting the seed for world generation
 	 and the size of the world.
@@ -43,7 +41,7 @@ public:
 	// using its parameterized constructor.
 	void addCube(EntityCube _cube);
 
-	void addChest(EntityChest& _chest);
+	void addChest(EntityChest*& _chest);
 
 	void setPlayerPos(glm::vec3 _Playerpos);
 
@@ -71,7 +69,7 @@ public:
 
 	void interactWithObjectInRange();
 
-	EntityChest& createChestAt(glm::vec3 _pos, int _size);
+	EntityChest* createChestAt(glm::vec3 _pos, int _size);
 
 
 	std::vector<EntityCube> getEntityCubes() { return entityCubeVector; }

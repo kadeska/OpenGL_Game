@@ -1,10 +1,6 @@
 #pragma once
 #include "entity.hpp"
 
-#include "../include/programLogger.hpp"
-using ProgramLogger::log;
-using ProgramLogger::LogLevel;
-
 #include <string>
 
 enum class ItemType 
@@ -27,16 +23,23 @@ private:
 	int inventoryID;
 	int inventorySize;
 	std::vector<ItemType> items;
-	bool showInventory;
+	
 public:
-	Inventory(int _id, int _size, std::vector<ItemType>& items);
+	bool showInventory;
+	Inventory(int _id, int _size, std::vector<ItemType>& _items) 
+	{
+		inventoryID = _id;
+		inventorySize = _size;
+		items = _items;
+		//setShowInv(false);
+	}
 	Inventory() = default;
 	~Inventory() = default;
-	inline std::vector<ItemType> getItems()
+	std::vector<ItemType> getItems()
 	{
 		return items;
 	}
-	inline int getInventoryID()
+	int getInventoryID()
 	{
 		return inventoryID;
 	}
@@ -81,7 +84,7 @@ public:
 		return texID;
 	}
 
-	inline Inventory getChestInventory()
+	Inventory& getChestInventory()
 	{
 		return chestInventory;
 	}

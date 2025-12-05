@@ -1,7 +1,6 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <array>
 #include <vector>
 
 // See comments for triangle and rectangle vertex data above.

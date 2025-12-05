@@ -1,27 +1,39 @@
 #include <iostream>
-//#include <map>
-
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-//#include <glm/gtc/type_ptr.hpp>
+#include <glm/fwd.hpp>
+
 
 #include "../include/Window.hpp"
 #include "../include/shader.hpp"
 #include "../include/textureLoader.hpp"
+#include "../include/textRenderer.hpp"
 #include "../include/camera3D.hpp"
+#include "../include/vertexData.hpp"
+VertexData vertData;
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../include/stb_image.h"
 
 #include "../include/programLogger.hpp"
 using ProgramLogger::log;
+using ProgramLogger::LogLevel;
 
-#include "../include/vertexData.hpp"
-VertexData vertData;
+
+GLFWwindow* window;
+Shader* sceneShader;
+Shader* textShader;
+
+TextRenderer textRenderer;
+
+TextureLoader textureLoader;
 
 // camera stuff
 
 Camera3D* myCamera;// = new Camera3D(glm::vec3(CAM_X, CAM_Y, CAM_Z));
+const float YAW = 45.0f;
+const float PITCH = -30.0f;
 float lastX;
 float lastY;
 bool firstMouse = true;
@@ -32,10 +44,15 @@ float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+
+
 void Window::initialize(float _camX, float _camY, float _camZ)
 {
 
-    myCamera = new Camera3D(glm::vec3(_camX, _camY, _camZ));
+    myCamera = new Camera3D(glm::vec3(_camX, _camY, _camZ), glm::vec3(0.0f, 1.0f, 0.0f), YAW, PITCH);
 
     // glfw: initialize and configure
     // ------------------------------
@@ -57,8 +74,6 @@ void Window::createShaderProgram()
 {
     sceneShader = new Shader("shaders/vertexShader.vs", "shaders/fragmentShader.fs");
 	textShader = new Shader("shaders/textVertexShader.vs", "shaders/textFragmentShader.fs");
-    //ourShader->setUp();
-	//textureLoader.loadTextures(sceneShader);
 }
 
 void Window::loadTextures()
@@ -130,7 +145,7 @@ void Window::mainLoop(World* _world)
 		// set player position after updating camera position
         // ----------------------------------
 
-		_world->setPlayerPos(myCamera->camPos);
+		_world->setPlayerPos(myCamera->getCamPos());
 
         // update world
         // ----------------------------------------
@@ -180,7 +195,7 @@ void Window::renderScene(World*& _world)
 
     // pass projection matrix to shader (note that in this case it could change every frame)
     
-    glm::mat4 projection = glm::perspective(glm::radians(myCamera->camZoomLevel), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(myCamera->getCamZoom()), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     sceneShader->setMat4("projection", projection);
 
     // camera/view transformation
@@ -259,7 +274,17 @@ void Window::terminateWindow()
     glfwTerminate();
 }
 
-void Window::processInput(GLFWwindow* _window, World* _world)
+Shader* Window::getSceneShader()
+{
+    return sceneShader;
+}
+
+Shader* Window::getTextShader()
+{
+    return textShader;
+}
+
+void Window::processInput(GLFWwindow*& _window, World*& _world)
 {
     // ESC key edge detection
 
@@ -298,14 +323,14 @@ void Window::processInput(GLFWwindow* _window, World* _world)
     {
         //log("Gravity toggled");
         //myCamera->useGravity = true;
-        if (!myCamera->useGravity) 
+        if (!myCamera->getUseGravity()) 
         {
-            myCamera->useGravity = true;
+            myCamera->setUseGravity(true);
             log("Gravity toggled on");
         } 
         else 
         {
-            myCamera->useGravity = false;
+            myCamera->setUseGravity(false);
             log("Gravity toggled off");
         }
     }
@@ -328,7 +353,6 @@ void Window::processInput(GLFWwindow* _window, World* _world)
     bool interact = glfwGetKey(_window, GLFW_KEY_E) == GLFW_PRESS;
     if (interact && !interactPressed)
     {
-
         //log("Interacting with object");
         _world->interactWithObjectInRange();
     }
@@ -340,49 +364,50 @@ void Window::processInput(GLFWwindow* _window, World* _world)
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        float velocity = myCamera->camMovementSpeed * deltaTime;
-        glm::vec3 moveVec = myCamera->camFront * velocity;
-        glm::vec3 intendedPos = myCamera->camPos + moveVec;
-        glm::vec3 checkPos = intendedPos + glm::normalize(myCamera->camFront) * myCamera->collisionRadius;
+        //log("W key pressed");
+        float velocity = myCamera->getCamMovementSpeed() * deltaTime;
+        glm::vec3 moveVec = myCamera->getCamFront() * velocity;
+        glm::vec3 intendedPos = myCamera->getCamPos() + moveVec;
+        glm::vec3 checkPos = intendedPos + glm::normalize(myCamera->getCamFront()) * myCamera->getCollisionRadius();
         glm::vec3 gridCheckPos = _world->snapToGrid(checkPos);
         if (!_world->isPositionOccupied(gridCheckPos)) {
-            myCamera->camPos = intendedPos;
+            myCamera->setCamPos(intendedPos);
         }
     }
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        float velocity = myCamera->camMovementSpeed * deltaTime;
-        glm::vec3 moveVec = -myCamera->camFront * velocity;
-        glm::vec3 intendedPos = myCamera->camPos + moveVec;
-        glm::vec3 checkPos = intendedPos - glm::normalize(myCamera->camFront) * myCamera->collisionRadius;
+        float velocity = myCamera->getCamMovementSpeed() * deltaTime;
+        glm::vec3 moveVec = -myCamera->getCamFront() * velocity;
+        glm::vec3 intendedPos = myCamera->getCamPos() + moveVec;
+        glm::vec3 checkPos = intendedPos - glm::normalize(myCamera->getCamFront()) * myCamera->getCollisionRadius();
         glm::vec3 gridCheckPos = _world->snapToGrid(checkPos);
         if (!_world->isPositionOccupied(gridCheckPos)) {
-            myCamera->camPos = intendedPos;
+            myCamera->setCamPos(intendedPos);
         }
     }
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        float velocity = myCamera->camMovementSpeed * deltaTime;
-        glm::vec3 moveVec = -myCamera->camRight * velocity;
-        glm::vec3 intendedPos = myCamera->camPos + moveVec;
-        glm::vec3 checkPos = intendedPos - glm::normalize(myCamera->camRight) * myCamera->collisionRadius;
+        float velocity = myCamera->getCamMovementSpeed() * deltaTime;
+        glm::vec3 moveVec = -myCamera->getCamRight() * velocity;
+        glm::vec3 intendedPos = myCamera->getCamPos() + moveVec;
+        glm::vec3 checkPos = intendedPos - glm::normalize(myCamera->getCamRight()) * myCamera->getCollisionRadius();
         glm::vec3 gridCheckPos = _world->snapToGrid(checkPos);
         if (!_world->isPositionOccupied(gridCheckPos)) {
-            myCamera->camPos = intendedPos;
+            myCamera->setCamPos(intendedPos);
         }
     }
 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        float velocity = myCamera->camMovementSpeed * deltaTime;
-        glm::vec3 moveVec = myCamera->camRight * velocity;
-        glm::vec3 intendedPos = myCamera->camPos + moveVec;
-        glm::vec3 checkPos = intendedPos + glm::normalize(myCamera->camRight) * myCamera->collisionRadius;
+        float velocity = myCamera->getCamMovementSpeed() * deltaTime;
+        glm::vec3 moveVec = myCamera->getCamRight() * velocity;
+        glm::vec3 intendedPos = myCamera->getCamPos() + moveVec;
+        glm::vec3 checkPos = intendedPos + glm::normalize(myCamera->getCamRight()) * myCamera->getCollisionRadius();
         glm::vec3 gridCheckPos = _world->snapToGrid(checkPos);
         if (!_world->isPositionOccupied(gridCheckPos)) {
-            myCamera->camPos = intendedPos;
+            myCamera->setCamPos(intendedPos);
         }
     }
         
