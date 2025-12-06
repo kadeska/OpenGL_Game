@@ -222,7 +222,8 @@ void Window::renderScene(World*& _world)
     for (EntityChest& chest : _world->getEntityChests())
     {
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, chest.getTexID());
+        glBindTexture(GL_TEXTURE_2D, chest.getTextureID());
+        chest.getTexID();
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, chest.getEntityPosition());
         sceneShader->setMat4("model", model);
@@ -232,16 +233,22 @@ void Window::renderScene(World*& _world)
     }
 }
 
+std::string fontFile = "fonts/arial.ttf";
+std::string pausedText = "Paused";
+std::string interactText = "Interact using E";
+glm::vec3 textLoc = glm::vec3(5.0f, 2.0f, 3.0f);
+
+
 void Window::renderTextOverlays(World*& _world)
 {
     if (paused)
     {
-        textRenderer.renderText("Paused", textShader, glm::vec3(5.0f, 2.0f, 3.0f), (SCR_WIDTH / 2.0f) - 100, SCR_HEIGHT / 2.0f, 1.0f, SCR_WIDTH, SCR_HEIGHT, "fonts/arial.ttf");
+        textRenderer.renderText(pausedText, textShader, textLoc, (SCR_WIDTH / 2.0f) - 100, SCR_HEIGHT / 2.0f, 1.0f, SCR_WIDTH, SCR_HEIGHT, fontFile);
     }
 
     if (_world->getInRangeOfInteracable())
     {
-        textRenderer.renderText("Interact using E", textShader, glm::vec3(5.0f, 2.0f, 3.0f), (SCR_WIDTH / 2.0f) - 100, SCR_HEIGHT / 2.0f, 1.0f, SCR_WIDTH, SCR_HEIGHT, "fonts/arial.ttf");
+        textRenderer.renderText(interactText, textShader, textLoc, (SCR_WIDTH / 2.0f) - 100, SCR_HEIGHT / 2.0f, 1.0f, SCR_WIDTH, SCR_HEIGHT, fontFile);
     }
 
     int index = 10;

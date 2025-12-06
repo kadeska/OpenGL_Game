@@ -37,12 +37,13 @@ TextRenderer::~TextRenderer()
 {
 }
 
-int TextRenderer::renderText(std::string _text, Shader* shader, glm::vec3 color, float x, float y, float scale, int _screenWidth, int _screenHeight, std::string _fontFilePath)
+int TextRenderer::renderText(std::string& _text, Shader*& shader, glm::vec3& color, float x, float y, float scale, int _screenWidth, int _screenHeight, std::string& _fontFilePath)
 {
     //log("Rendering text");
 
     // OpenGL state
     // ------------
+	//std::string pro = "projection";
     glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -185,6 +186,13 @@ int TextRenderer::renderText(std::string _text, Shader* shader, glm::vec3 color,
     }
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+
+	// clean up textures to avoid memory leaks
+    for (auto& pair : Characters)
+    {
+        glDeleteTextures(1, &pair.second.TextureID);
+    }
 
 
     return 0;
