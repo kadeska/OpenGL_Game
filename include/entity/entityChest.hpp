@@ -9,10 +9,10 @@
 class EntityChest : public BaseEntity
 {
 private:
+	int inventorySize = 0;
 	Inventory chestInventory;
 	std::string inventoryFilename;
-	int inventorySize;
-	int seed;
+	int seed = 0;
 	int texID = 2;
 public:
 	bool interactable = true;
@@ -24,9 +24,7 @@ public:
 	int generateRandomInventory();
 	int generateInventoryFromFile();
 
-	void setInventorySize(const int& _size);
-
-	int getInventorySize();
+	unsigned int getInventorySize();
 
 	void toggleInventory();
 	void saveInventory(Inventory& _inventory);

@@ -12,7 +12,7 @@ class Inventory
 {
 private:
 	int inventoryID = -1;
-	int inventorySize = 0;
+	unsigned int inventorySize = 0;
 	bool showInventory = false;
 
 	std::vector<Item> inventoryArray;
@@ -30,7 +30,7 @@ public:
 	void removeItem(const Item& _item);
 
 	int getInventoryID();
-	int getInventorySize();
+	unsigned int getInventorySize();
 
 	// returns whether the inventory should be shown or not
 	bool canShowInventory();

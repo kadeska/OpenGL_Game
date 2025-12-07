@@ -11,6 +11,7 @@ using ProgramLogger::LogLevel;
 #include "../include/inventoryManager.hpp"
 InventoryManager inventoryManager = InventoryManager(10);
 
+
 EntityChest::EntityChest(const int& _id, const int& _size, const glm::vec3& _pos, const std::string& _inventoryFilename)
 {
 	log("creating EntityChest...");
@@ -33,10 +34,11 @@ int EntityChest::generateEmptyInventory()
 
 int EntityChest::generateRandomInventory()
 {
-	log("creating random inventoy for object ID " + std::to_string(getEntityID()));
-	if (inventoryManager.createRandomInventoy(getEntityID(), chestInventory) == -1) 
+	//log("creating random inventoy for object ID " + std::to_string(getEntityID()));
+	if (inventoryManager.createRandomInventoy(getEntityID(), chestInventory, inventorySize) == -1) 
 	{
-		log("Something went wrong");
+		//log("Something went wrong");
+		return -1;
 	}
 	return 0;
 }
@@ -57,19 +59,14 @@ int EntityChest::generateInventoryFromFile()
 	return -1;
 }
 
-void EntityChest::setInventorySize(const int& _size)
+unsigned int EntityChest::getInventorySize()
 {
-	inventorySize = _size;
-}
-
-int EntityChest::getInventorySize()
-{
-	if(inventorySize == 0) 
+	if(chestInventory.getInventorySize() == 0)
 	{
 		log("Inventory size is zero! Have you initialized it yet?", LogLevel::ERROR);
 		return -1;
 	}
-	return inventorySize;
+	return chestInventory.getInventorySize();
 }
 void EntityChest::toggleInventory()
 {

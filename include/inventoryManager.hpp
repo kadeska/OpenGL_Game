@@ -18,7 +18,7 @@ public:
 	~InventoryManager() = default;
 
 	void createEmtpyInventory(const int& _inventoryID);
-	int createRandomInventoy(const int& _inventoryID, Inventory& _outInventory);
+	int createRandomInventoy(const int& _inventoryID, Inventory& _outInventory, const int& _invSize);
 	void deleteInventory(const int& _inventoryID);
 };
 

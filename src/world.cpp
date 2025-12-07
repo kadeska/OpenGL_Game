@@ -4,15 +4,11 @@
 #include "../include/programLogger.hpp"
 #include "../include/vertexData.hpp"
 
-
-
-
-
 using ProgramLogger::log;
 using ProgramLogger::LogLevel;
 
-
 static const float INTERACT_RANGE = 1.5f;
+static const int CHEST_INVENTORY_SIZE = 4;
 
 
 //bool inRangeOfInteractable = false;
@@ -288,7 +284,7 @@ void World::spawnChestAt(glm::vec3 _pos)
 		// Fix: Store the pointer in a local variable, then pass the reference to addChest
 		//chestPtr = createChestAt(snappedPos, 5);
 		//addChest(chestPtr);
-		addChest(createChestAt(snappedPos, 3));
+		addChest(createChestAt(snappedPos, CHEST_INVENTORY_SIZE));
 
 		objectID++;
 	}

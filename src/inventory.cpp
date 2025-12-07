@@ -10,7 +10,7 @@ Inventory::Inventory(const int& _id, const int& _size)
 {
 	if (_size == 0) 
 	{
-		log("Inventory size can not be zero.", LogLevel::ERROR);
+		log("Inventory size is zero.", LogLevel::ERROR);
 		return;
 	}
 	// Inisialize inventory with given ID and size
@@ -40,8 +40,8 @@ void Inventory::addItem(const Item& _item)
             getInventoryArray().at(i) = _item;
             getInventoryArray().at(i).setItemQuantity(1);
             itemAdded = true;
-            log("Adding item to inventory...  Item ID: " + std::to_string(_item.getItemID()) 
-                + " Inventory ID: " + std::to_string(getInventoryID()));
+            /*log("Adding item to inventory...  Item ID: " + std::to_string(_item.getItemID()) 
+                + " Inventory ID: " + std::to_string(getInventoryID()));*/
             break; // Exit loop since the item was added
         }
 
@@ -51,8 +51,8 @@ void Inventory::addItem(const Item& _item)
             // Increment quantity
             getInventoryArray().at(i).setItemQuantity(getInventoryArray().at(i).getItemQuantity() + 1);
             itemAdded = true;
-            log("Incrementing item...  Item ID: " + std::to_string(_item.getItemID())
-                + " Inventory ID: " + std::to_string(getInventoryID()));
+            /*log("Incrementing item...  Item ID: " + std::to_string(_item.getItemID())
+                + " Inventory ID: " + std::to_string(getInventoryID()));*/
             break; // Exit loop since quantity was incremented
         }
     }
@@ -77,7 +77,7 @@ int Inventory::getInventoryID()
 {
 	return inventoryID;
 }
-int Inventory::getInventorySize()
+unsigned int Inventory::getInventorySize()
 {
 	return inventorySize;
 }
