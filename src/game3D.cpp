@@ -27,7 +27,6 @@ Game3D::Game3D()
 	// Create world
 	myWorld = new World(myWindow.getSceneShader(), WORLD_SEED, WORLD_SIZE);
 	myWorld->generateWorld(WORLD_SEED);
-	myWorld->spawnChestAt(glm::vec3(13.0f, 3.0f, 18.0f));
 }
 
 Game3D::~Game3D()
