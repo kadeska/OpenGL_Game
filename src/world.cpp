@@ -11,13 +11,6 @@ static const float INTERACT_RANGE = 1.5f;
 static const int CHEST_INVENTORY_SIZE = 4;
 
 
-//bool inRangeOfInteractable = false;
-
-EntityChest* closestChest;
-EntityChest* chestPtr = nullptr;
-EntityChest* newChest = nullptr;     // = EntityChest(-1, 0, glm::vec3(0, 0, 0), "null");
-
-
 // global cube ID counter
 int objectID = 0;
 
@@ -252,7 +245,7 @@ bool World::isInRange(glm::vec3 playerPosition, glm::vec3 entityPosition, float 
 	return distanceSquared <= (interactRange * interactRange);
 }
 
-void World::interactWithObjectInRange()
+void World::interactWithObjectInRange(std::string& _outData)
 {
 	if (getInRangeOfInteracable() && closestChest->getEntityID() != -1)
 	{
@@ -268,9 +261,13 @@ void World::interactWithObjectInRange()
 			log("Item ID: " + std::to_string(item.getItemID()) + "  Item quantity: " + std::to_string(item.getItemQuantity()));
 			//log();
 			//log("Item type: " + item.getItemType());
+			_outData += "Item ID: " + std::to_string(item.getItemID()) + "  Item quantity: " + std::to_string(item.getItemQuantity()) + "\n";
 		}
 		closestChest->getChestInventory().addItem(Item{999, ItemType::IRON, 1});
 		closestChest->getChestInventory().addItem(Item{ 888, ItemType::ARMOR, 1 });
+
+		// toggle the inventory display state
+		closestChest->getChestInventory().setShowInv(!closestChest->getChestInventory().canShowInventory());
 	}
 }
 

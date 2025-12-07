@@ -29,6 +29,9 @@ TextRenderer textRenderer;
 
 TextureLoader textureLoader;
 
+// text rendering stuff
+std::string dataToRenderAsText;
+
 // camera stuff
 
 Camera3D* myCamera;// = new Camera3D(glm::vec3(CAM_X, CAM_Y, CAM_Z));
@@ -253,6 +256,11 @@ void Window::renderTextOverlays(World*& _world)
 
     int index = 10;
 
+    if (!dataToRenderAsText.empty())
+    {
+        textRenderer.renderText(dataToRenderAsText, textShader, textLoc, (SCR_WIDTH / 2.0f) - 100, SCR_HEIGHT / 2.0f, 1.0f, SCR_WIDTH, SCR_HEIGHT, fontFile);
+    }
+
     //textRenderer.renderText("Testing1", textShader, glm::vec3(5.0f, 2.0f, 3.0f), (SCR_WIDTH / 2.0f) - 100, SCR_HEIGHT / 2.0f, 1.0f, SCR_WIDTH, SCR_HEIGHT, "fonts/arial.ttf");
 
     // draw inventory
@@ -361,7 +369,7 @@ void Window::processInput(GLFWwindow*& _window, World*& _world)
     if (interact && !interactPressed)
     {
         //log("Interacting with object");
-        _world->interactWithObjectInRange();
+        _world->interactWithObjectInRange(dataToRenderAsText);
     }
     interactPressed = interact;
 

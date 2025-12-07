@@ -9,6 +9,10 @@
 class World
 {
 private:
+	EntityChest* closestChest;
+	EntityChest* chestPtr = nullptr;
+	EntityChest* newChest = nullptr;     // = EntityChest(-1, 0, glm::vec3(0, 0, 0), "null");
+
 	glm::vec3 playerLocation;
 	bool inRangeOfInteractable = false;
 
@@ -76,10 +80,12 @@ public:
 	// Returns value of inRangeOfInteractable
 	bool getInRangeOfInteracable();
 
+	EntityChest*& getClosestChest() { return closestChest; }
+
 	// Checks if the player is within interactRange of the given entityPosition.
 	bool isInRange(glm::vec3 playerPosition, glm::vec3 entityPosition, float interactRange);
 
-	void interactWithObjectInRange();
+	void interactWithObjectInRange(std::string& _outData);
 
 
 	std::vector<EntityCube> getEntityCubes() { return entityCubeVector; }
