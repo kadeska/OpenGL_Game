@@ -263,10 +263,11 @@ void World::interactWithObjectInRange(std::string& _outData)
 			//log("Item type: " + item.getItemType());
 			_outData += "Item ID: " + std::to_string(item.getItemID()) + "  Item quantity: " + std::to_string(item.getItemQuantity()) + "\n";
 		}
-		closestChest->getChestInventory().addItem(Item{999, ItemType::IRON, 1});
-		closestChest->getChestInventory().addItem(Item{ 888, ItemType::ARMOR, 1 });
+		//closestChest->getChestInventory().addItem(Item{999, ItemType::IRON, 1});
+		//closestChest->getChestInventory().addItem(Item{ 888, ItemType::ARMOR, 1 });
 
 		// toggle the inventory display state
+		
 		closestChest->getChestInventory().setShowInv(!closestChest->getChestInventory().canShowInventory());
 	}
 }
@@ -302,9 +303,10 @@ void World::addChest(EntityChest*& _chest)
 EntityChest*& World::createChestAt(glm::vec3 _pos, int _size)
 {
 	newChest = new EntityChest(objectID++, _size, _pos, std::to_string(objectID) + "inventory.txt");
-	if (newChest->generateRandomInventory() == -1) 
+
+	if (newChest->getChestInventory().getInventoryID() == -1)
 	{
-		log("Can not generate random inventory.", LogLevel::ERROR);
+		log("OOPS!! Chest inventory was not initialized.", LogLevel::ERROR);
 		return newChest;
 	}
 	

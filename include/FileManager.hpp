@@ -12,8 +12,8 @@ namespace FileManager
 		log("initializing FileManager ... ");
 	}
 
-	// save inventory data to file
-	inline void saveInventoryToFile(std::string& filename, std::string& _inventoryData)
+	// save inventory data to file. Use EntityID as filename. 
+	inline int saveInventoryToFile(std::string& filename, const std::string& _inventoryData)
 	{
 		log("Saving data to file: " + filename);
 
@@ -26,13 +26,16 @@ namespace FileManager
                 outFile << _inventoryData; // Write the string to the file
                 outFile.close(); // Close the file
                 log("Data saved to file successfully.");
+                return 0;
             }
             else {
                 log("Error opening file.", LogLevel::ERROR);
+                return -1;
             }
-            return;
 	}
-    inline void readInventoryFromFile(const std::string& filename, std::string& out_inventoryData)
+
+	// read inventory data from file
+    inline int readInventoryFromFile(const std::string& filename, std::string& out_inventoryData)
     {
         log("Reading data from file: " + filename);
             // Create an input file stream
@@ -47,10 +50,11 @@ namespace FileManager
                 }
                 inFile.close(); // Close the file
                 log("Data read from file successfully.");
+                return 0;
             }
             else {
                 log("Error opening file.", LogLevel::ERROR);
+                return -1;
             }
-            return;
 	}
 }

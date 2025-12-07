@@ -20,24 +20,16 @@ public:
 	EntityChest(const int& _id, const int& _size, const glm::vec3& _pos, const std::string& _inventoryFilename);
 	~EntityChest() = default;
 
-	int generateEmptyInventory();
-	int generateRandomInventory();
-	int generateInventoryFromFile();
-
-	unsigned int getInventorySize();
-
-	void toggleInventory();
-	void saveInventory(Inventory& _inventory);
-
 	int getTextureID();
 
-	Inventory& getChestInventory();
+	void toggleInventory();
 	
+	void saveInventory(Inventory& _inventory);
+
+	Inventory& getChestInventory();
+	unsigned int getInventorySize();
 	std::vector<Item>& getChestInventoryItems();
 
 	void setInteractable(bool _interactable);
-
 	bool getInteractable();
-
-	std::string convertInventoryToString(std::vector<ItemType>& items);
 };

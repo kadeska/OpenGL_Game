@@ -256,10 +256,12 @@ void Window::renderTextOverlays(World*& _world)
 
     int index = 10;
 
-    if (!dataToRenderAsText.empty())
+    // commented out for now as I focu on other tasks first. 
+    // UI is the least important right now until basic gameplay is functional.
+    /*if (!dataToRenderAsText.empty())
     {
         textRenderer.renderText(dataToRenderAsText, textShader, textLoc, (SCR_WIDTH / 2.0f) - 100, SCR_HEIGHT / 2.0f, 1.0f, SCR_WIDTH, SCR_HEIGHT, fontFile);
-    }
+    }*/
 
     //textRenderer.renderText("Testing1", textShader, glm::vec3(5.0f, 2.0f, 3.0f), (SCR_WIDTH / 2.0f) - 100, SCR_HEIGHT / 2.0f, 1.0f, SCR_WIDTH, SCR_HEIGHT, "fonts/arial.ttf");
 

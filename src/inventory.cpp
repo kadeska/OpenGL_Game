@@ -31,7 +31,7 @@ void Inventory::addItem(const Item& _item)
 {
     bool itemAdded = false; // Flag to check if item was added or quantity incremented
 
-    for (int i = 0; i < getInventorySize(); i++)
+    for (unsigned int i = 0; i < getInventorySize(); i++)
     {
         // Check if the slot is empty
         if (getInventoryArray().at(i).getItemID() == 0)
