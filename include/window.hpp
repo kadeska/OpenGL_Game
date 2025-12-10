@@ -3,6 +3,10 @@
 #include "world.hpp"
 #include "shader.hpp"
 
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw.h>
+#include <imgui/imgui_impl_opengl3.h>
+
 #include <GLFW/glfw3.h>
 
 /*
@@ -44,6 +48,7 @@ public:
 	// ---------------------------------------------------
 
 	void initialize(float _camX, float _camY, float _camZ);
+	void imGuiNewFrame();
 	void createWindow();
 	void loadOpenGL();
 	void createShaderProgram();
@@ -65,6 +70,11 @@ private:
 	*/
 	void renderScene(World*& _world);
 	void renderTextOverlays(World*& _world);
+	void renderImGuiOverlay(World*& _world);
+
+
+
+	void cleanupImGui();
 
 };
 

@@ -24,6 +24,8 @@ void printMaxVertexAttributes()
 
 int main(int argc, char* argv[])
 {
+
+
 	Game3D* myGame3D = new Game3D();
 	printMaxVertexAttributes();
 	myGame3D->start();

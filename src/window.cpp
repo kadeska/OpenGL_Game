@@ -73,6 +73,13 @@ void Window::initialize(float _camX, float _camY, float _camZ)
     lastY = SCR_HEIGHT / 2.0f;
 }
 
+void Window::imGuiNewFrame()
+{
+	ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+}
+
 void Window::createShaderProgram()
 {
     sceneShader = new Shader("shaders/vertexShader.vs", "shaders/fragmentShader.fs");
@@ -120,10 +127,22 @@ void Window::loadOpenGL()
 
 void Window::mainLoop(World* _world)
 {
-    sceneShader->setUp();
+    // IMGUI stuff
+    // -----------------
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
+
+
+    
 
     // render loop
     // -----------
+    sceneShader->setUp();
     while (!glfwWindowShouldClose(window))
     {
         // per-frame time logic
@@ -162,6 +181,8 @@ void Window::mainLoop(World* _world)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //glClear(GL_COLOR_BUFFER_BIT);
 
+        imGuiNewFrame();
+
         // draw 3d scene
         // ----------------------------------------------------
 
@@ -171,11 +192,10 @@ void Window::mainLoop(World* _world)
         // --------------------------------------------------------
 
         renderTextOverlays(_world);
-        
 
-        //textRenderer.renderText("This is sample text 1", textShader, glm::vec3(2.0f, 0.0f, 0.0f), 0.0f, 100.5f, 1, SCR_WIDTH, SCR_HEIGHT, "fonts/arial.ttf");
-        //textRenderer.renderText("This is sample text 2", textShader, glm::vec3(20.0f, 0.0f, 0.0f), 0.0f, 50.5f, 1, SCR_WIDTH, SCR_HEIGHT, "fonts/arial.ttf");
-
+        // draw imGui overlay
+        // --------------------------------------------------------
+        renderImGuiOverlay(_world);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -187,6 +207,7 @@ void Window::mainLoop(World* _world)
             std::cout << "OpenGL error: " << err << std::endl;
         }
     }
+	cleanupImGui();
 }
 
 void Window::renderScene(World*& _world)
@@ -247,39 +268,41 @@ void Window::renderTextOverlays(World*& _world)
     if (paused)
     {
         textRenderer.renderText(pausedText, textShader, textLoc, (SCR_WIDTH / 2.0f) - 100, SCR_HEIGHT / 2.0f, 1.0f, SCR_WIDTH, SCR_HEIGHT, fontFile);
+        return;
     }
 
     if (_world->getInRangeOfInteracable())
     {
         textRenderer.renderText(interactText, textShader, textLoc, (SCR_WIDTH / 2.0f) - 100, SCR_HEIGHT / 2.0f, 1.0f, SCR_WIDTH, SCR_HEIGHT, fontFile);
     }
+}
 
-    int index = 10;
-
-    // commented out for now as I focu on other tasks first. 
-    // UI is the least important right now until basic gameplay is functional.
-    /*if (!dataToRenderAsText.empty())
+void Window::renderImGuiOverlay(World*& _world)
+{
+    if (_world->showInventory) 
     {
-        textRenderer.renderText(dataToRenderAsText, textShader, textLoc, (SCR_WIDTH / 2.0f) - 100, SCR_HEIGHT / 2.0f, 1.0f, SCR_WIDTH, SCR_HEIGHT, fontFile);
-    }*/
+        ImVec2 text_size = ImGui::CalcTextSize(dataToRenderAsText.c_str(), nullptr, false, 0.0f);
+        ImVec2 window_position((SCR_WIDTH * 0.5) - 380, (SCR_HEIGHT * 0.5));
+        ImGui::SetNextWindowPos(window_position);
+        int line_count = text_size.y / ImGui::GetTextLineHeight();
+        ImGui::SetNextWindowSize(ImVec2(text_size.x + 30.0f, (line_count + 1) * ImGui::GetTextLineHeight() + 30.0f));
 
-    //textRenderer.renderText("Testing1", textShader, glm::vec3(5.0f, 2.0f, 3.0f), (SCR_WIDTH / 2.0f) - 100, SCR_HEIGHT / 2.0f, 1.0f, SCR_WIDTH, SCR_HEIGHT, "fonts/arial.ttf");
+        ImGui::Begin("Inventory");
+        //ImGui::Text("Camera Position: X: %.2f Y: %.2f Z: %.2f", myCamera->getCamPos().x, myCamera->getCamPos().y, myCamera->getCamPos().z);
+        ImGui::Text(dataToRenderAsText.c_str());
+        ImGui::End();
+        //ImGui::Render();
+        //ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    }
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
 
-    // draw inventory
-    //for (EntityChest& chest: _world->getEntityChests()) 
-    //{
-    //    //textRenderer.renderText("Testing2", textShader, glm::vec3(5.0f, 2.0f, 3.0f), (SCR_WIDTH / 2.0f) - 100, SCR_HEIGHT / 2.0f, 1.0f, SCR_WIDTH, SCR_HEIGHT, "fonts/arial.ttf");
-    //    if (chest.getChestInventory().canShowInventory()) 
-    //    {
-    //        //textRenderer.renderText("Testing3", textShader, glm::vec3(5.0f, 2.0f, 3.0f), (SCR_WIDTH / 2.0f) - 150, SCR_HEIGHT / 2.0f, 1.0f, SCR_WIDTH, SCR_HEIGHT, "fonts/arial.ttf");
-    //        for (Item item: chest.getChestInventoryItems()) 
-    //        {
-    //            textRenderer.renderText("Testing4", textShader, glm::vec3(5.0f, 2.0f, 3.0f), (SCR_WIDTH / 2.0f) - 200, SCR_HEIGHT / 2.0f, 1.0f, SCR_WIDTH, SCR_HEIGHT, "fonts/arial.ttf");
-
-    //            index += 10;
-    //        }
-    //    }
-    //}
+void Window::cleanupImGui()
+{
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 }
 
 

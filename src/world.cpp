@@ -15,6 +15,9 @@ static const int CHEST_INVENTORY_SIZE = 4;
 int objectID = 0;
 
 
+int interactedObjectID = -1;
+bool previouslyInRange = false;
+
 Shader* worldShader;
 
 int worldID = 0;
@@ -40,30 +43,27 @@ World::World(Shader* _shader, float seed, int _worldSize)
 
 }
 
+void World::createCube(int x, int y, int z) {
+	log("Creating cube at position: (" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")", LogLevel::DEBUG);
+	log("Cube ID: " + std::to_string(objectID), LogLevel::DEBUG);
+	addCube(EntityCube(objectID++, glm::vec3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z))));
+}
+
 void World::createWorld(float seed)
 {
 	log("Creating World: Size= " + std::to_string(worldSize) 
 		+ " ID = " + std::to_string(worldID)
 		+ " Seed= " + std::to_string(worldSeed)
 	    );
-	for (int x = 0; x < worldSize; x++)
-	{
-		for (int y = 0; y < worldSize; y++)
-		{
-			for (int z = 0; z < worldSize; z++)
-			{
-				log("Creating cube at position: (" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")", LogLevel::DEBUG);
-				log("Cube ID: " + std::to_string(objectID), LogLevel::DEBUG);
 
-				// Create a cube entity at the specified position
+	int wallHeight = 4;
 
-				//addCube(EntityCube(cubeID, glm::vec3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z))));
-
-				if(y == 0) // only create cubes at ground level for a flat world
-				{
-					addCube(EntityCube(objectID, glm::vec3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z))));
+	for (int x = 0; x < worldSize; x++) {
+		for (int y = 0; y < worldSize; y++) {
+			for (int z = 0; z < worldSize; z++) {
+				if (y == 0 || (y < wallHeight && (x == 0 || x == worldSize - 1 || z == 0 || z == worldSize - 1))) {
+					createCube(x, y, z);
 				}
-				objectID++;
 			}
 		}
 	}
@@ -106,6 +106,19 @@ void World::updateWorld()
 {
 	// check for collisions, entity updates, etc.
 	checkPlayerCollisions();
+
+	// check if player is still in range of interactable object that they interacted with
+	//if (closestChest == nullptr) 
+	//{
+	//	return;
+	//}
+	//if (!getInRangeOfInteracable() && closestChest->getEntityID() != interactedObjectID)
+	//{
+	//	if (showInventory) 
+	//	{ 
+	//		showInventory = false; 
+	//	}
+	//}
 }
 
 bool World::checkPlayerCollisions()
@@ -137,25 +150,41 @@ bool World::checkPlayerCollisions()
 
 	// check for interactibles 
 
-	// for each cube in the world (change to be for each interactable entity in the world)
+	//float closestDistance = INTERACT_RANGE; // Initialize with the range boundary
+
+	// For each chest in the world
 	for (EntityChest& chest : entityChestVector) // changed to be a reference to improve performance by avoiding a copy
 	{
-		// if the entity is interactable. (can be removed once I make a vector of interacables)
+		// If the entity is interactable
 		if (chest.getInteractable())
 		{
-			//log("Interactable");
-			// check if the player is withen range of an interactable cube
-			if (isInRange(getPlayerPos(), chest.getEntityPosition(), INTERACT_RANGE))
+			// Calculate the distance to the chest
+			float distance = getDistance(getPlayerPos(), chest.getEntityPosition());
+
+			// Check if the player is within the interaction range
+			if (distance <= INTERACT_RANGE)
 			{
-				//log("In range of interactable: " + std::to_string(chest.getEntityID()));
-				inRangeOfInteractable = true;
+				//showInventory = true; // Set to true to show inventory UI
+				inRangeOfInteractable = true; // Mark the player is in range
 				closestChest = &chest;
-				//return;
+				interactedObjectID = chest.getEntityID();
+			}
+			// Not in range
+			else
+			{
+				showInventory = false; // Set to false if you want to hide it when not in range
 			}
 		}
 	}
 
 	return false;
+}
+
+float World::getDistance(const glm::vec3& pos1, const glm::vec3& pos2) {
+	float deltaX = pos1.x - pos2.x;
+	float deltaY = pos1.y - pos2.y;
+	float deltaZ = pos1.z - pos2.z;
+	return std::sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
 }
 
 void World::addCube(EntityCube _cube)
@@ -170,8 +199,6 @@ void World::addCube(EntityCube _cube)
 		}
 	}
 }
-
-
 
 void World::setPlayerPos(glm::vec3 _Playerpos)
 {
@@ -188,8 +215,6 @@ void World::spawnEntityCubeAt(glm::vec3 _pos)
 		objectID++;
 	}
 }
-
-
 
 bool World::isPositionOccupied(glm::vec3 _pos)
 {
@@ -231,7 +256,6 @@ bool World::isPositionOccupied(glm::vec3 _pos)
 	return false;
 }
 
-
 bool World::getInRangeOfInteracable()
 {
 	return inRangeOfInteractable;
@@ -249,27 +273,24 @@ void World::interactWithObjectInRange(std::string& _outData)
 {
 	if (getInRangeOfInteracable() && closestChest->getEntityID() != -1)
 	{
+		//interactedObjectID = closestChest->getEntityID();
+		_outData.clear();
 		log("Interacting with object ID: " + std::to_string(closestChest->getEntityID()));
 		// Perform interaction logic here
-		//closestChest.toggleInventory();
-		//closestChest.getChestInventory().showInventory = !closestChest.getChestInventory().showInventory;
-		//closestChest.getChestInventory().setShowInv(true);
 
-		log("Chest inventory contents for inventory ID: " + std::to_string(closestChest->getChestInventory().getInventoryID()));
+		//log("Chest inventory contents for inventory ID: " + std::to_string(closestChest->getChestInventory().getInventoryID()));
 		for (Item& item : closestChest->getChestInventoryItems()) 
 		{
 			log("Item ID: " + std::to_string(item.getItemID()) + "  Item quantity: " + std::to_string(item.getItemQuantity()));
-			//log();
 			//log("Item type: " + item.getItemType());
 			_outData += "Item ID: " + std::to_string(item.getItemID()) + "  Item quantity: " + std::to_string(item.getItemQuantity()) + "\n";
 		}
-		//closestChest->getChestInventory().addItem(Item{999, ItemType::IRON, 1});
-		//closestChest->getChestInventory().addItem(Item{ 888, ItemType::ARMOR, 1 });
-
 		// toggle the inventory display state
-		
-		closestChest->getChestInventory().setShowInv(!closestChest->getChestInventory().canShowInventory());
+		//closestChest->getChestInventory().setShowInv(!closestChest->getChestInventory().canShowInventory());
+
+		showInventory = !showInventory;
 	}
+	
 }
 
 void World::spawnChestAt(glm::vec3 _pos)

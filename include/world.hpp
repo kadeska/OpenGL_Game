@@ -9,7 +9,8 @@
 class World
 {
 private:
-	EntityChest* closestChest;
+	EntityChest* closestChest = nullptr;
+	//EntityChest* currentChest = nullptr;
 	EntityChest* chestPtr = nullptr;
 	EntityChest* newChest = nullptr;     // = EntityChest(-1, 0, glm::vec3(0, 0, 0), "null");
 
@@ -28,7 +29,13 @@ private:
 	// Used to add chests to the array to be rendered. 
 	void addChest(EntityChest*& _chest);
 
+	void createCube(int x, int y, int z);
+	float getDistance(const glm::vec3& pos1, const glm::vec3& pos2);
+
 public:
+
+	bool showInventory = false;
+
 	/*
 	 Default constructor that will initialize the world with default parameters.
 	 The default world will be a simple flat terrain with no special features.

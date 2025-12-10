@@ -9,9 +9,9 @@ World* myWorld;
 static const int WORLD_SIZE = 24;
 static const float WORLD_SEED = 0;
 
-static const float CAM_X = 0.0f;
-static const float CAM_Y = 10.0f;
-static const float CAM_Z = 0.0f;
+static const float CAM_X = 5.0f;
+static const float CAM_Y = 2.0f;
+static const float CAM_Z = 5.0f;
 
 
 Game3D::Game3D()
@@ -26,7 +26,8 @@ Game3D::Game3D()
 
 	// Create world
 	myWorld = new World(myWindow.getSceneShader(), WORLD_SEED, WORLD_SIZE);
-	myWorld->generateWorld(WORLD_SEED);
+	//myWorld->generateWorld(WORLD_SEED);
+	myWorld->createWorld(WORLD_SEED);
 }
 
 Game3D::~Game3D()
