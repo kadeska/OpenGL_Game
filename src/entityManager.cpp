@@ -1,0 +1,118 @@
+
+#include "../include/entity/entity.hpp"
+#include "../include/entity/entityCube.hpp"
+#include "../include/entity/entityChest.hpp"
+#include "../include/entity/entityPlayer.hpp"
+#include "../include/entityManager.hpp"
+
+#include "../include/programLogger.hpp"
+#include <glm/fwd.hpp>
+using ProgramLogger::log;
+using ProgramLogger::LogLevel;
+
+InventoryManager* inventoryManager = nullptr;
+
+std::string inventoryFileExtension = ".inv";
+static const int DEFAULT_INVENTORY_SIZE = 3;
+
+EntityCube* newCube = nullptr;
+EntityChest* newChest = nullptr;
+EntityPlayer* player = nullptr;
+
+
+std::vector<EntityCube*> enitityCubeList = std::vector<EntityCube*>();
+std::vector<EntityChest*> enitityChestList = std::vector<EntityChest*>();
+//std::vector<EntityCube*> enitityCubeList = std::vector<EntityCube*>();
+
+glm::vec3 playerLocation;
+int entityIDcounter = 0;
+
+EntityManager::EntityManager()
+{
+	log("EntityManager Constructor");
+	inventoryManager = new InventoryManager(10);
+}
+
+void EntityManager::createEntityCube(glm::vec3 _cubeLocation)
+{
+	glm::vec3 snappedPos = snapToGrid(_cubeLocation);
+	if (!isPositionOccupied(snappedPos))
+	{
+		log("Spawning chest");
+		newCube = new EntityCube(entityIDcounter++, snappedPos);
+	}
+}
+
+void EntityManager::createEntityChest(glm::vec3 _chestLocation)
+{
+	glm::vec3 snappedPos = snapToGrid(_chestLocation);
+	if (!isPositionOccupied(snappedPos))
+	{
+		log("Spawning chest");
+		newChest = new EntityChest(entityIDcounter++, DEFAULT_INVENTORY_SIZE, snappedPos, std::to_string(entityIDcounter) + inventoryFileExtension, inventoryManager);
+	}
+}
+
+void EntityManager::createEntityPlayer(glm::vec3 _playerLocation)
+{
+	
+	glm::vec3 snappedPos = snapToGrid(_playerLocation);
+	if (!isPositionOccupied(snappedPos))
+	{
+		log("Spawning chest");
+		player = new EntityPlayer(snappedPos);
+		playerLocation = snappedPos;
+	}
+}
+
+
+
+// ---------------------------------------------------------------UTILITIES---------------------------------------------------------
+
+bool EntityManager::isPositionOccupied(glm::vec3 _pos)
+{
+	int X1 = static_cast<int>(_pos.x);
+	int Y1 = static_cast<int>(_pos.y);
+	int Z1 = static_cast<int>(_pos.z);
+
+	int X2, Y2, Z2;
+
+	for (EntityCube* cube : enitityCubeList)
+	{
+		X2 = static_cast<int>(cube->getEntityPosition().x);
+		Y2 = static_cast<int>(cube->getEntityPosition().y);
+		Z2 = static_cast<int>(cube->getEntityPosition().z);
+
+		if (X1 == X2 && Y1 == Y2 && Z1 == Z2)
+		{
+			log("Position is already occupied.", LogLevel::DEBUG);
+			return true;
+		}
+		/*if (cube.getEntityPosition() == _pos)
+		{
+			log("Position is already occupied.");
+			return true;
+		}*/
+	}
+
+	for (EntityChest* chest : enitityChestList)
+	{
+		X2 = static_cast<int>(chest->getEntityPosition().x);
+		Y2 = static_cast<int>(chest->getEntityPosition().y);
+		Z2 = static_cast<int>(chest->getEntityPosition().z);
+		if (X1 == X2 && Y1 == Y2 && Z1 == Z2)
+		{
+			log("Position is already occupied.", LogLevel::DEBUG);
+			return true;
+		}
+	}
+	return false;
+}
+
+glm::vec3 EntityManager::snapToGrid(glm::vec3& pos) {
+	return glm::vec3(
+		std::round(pos.x),
+		std::round(pos.y),
+		std::round(pos.z)
+	);
+}

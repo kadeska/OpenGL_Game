@@ -30,7 +30,7 @@ private:
 	// Used to add chests to the array to be rendered. 
 	void addChest(EntityChest*& _chest);
 
-	void createCube(int x, int y, int z);
+	void createCube(glm::vec3 _pos);
 	float getDistance(const glm::vec3& pos1, const glm::vec3& pos2);
 
 	bool checkForClosestInteractable();
@@ -40,16 +40,12 @@ public:
 	bool showInventory = false;
 
 	/*
-	 Default constructor that will initialize the world with default parameters.
-	 The default world will be a simple flat terrain with no special features.
-	 Pass a Shader object pointer to be used for rendering the world.
-	*/
-	World(Shader*& _shader);
-	/*
 	 Parameterized constructor that allows setting the seed for world generation
 	 and the size of the world.
 	*/
-	World(Shader* _shader, float seed, int _worldSize);
+	World(Shader* _shader, float _seed, int _worldSize);
+
+	void init(Shader* _shader, float _seed, int _worldSize);
 
 	void createWorld(float seed);
 	void generateWorld(float seed);
@@ -68,19 +64,14 @@ public:
 
 	void setPlayerPos(glm::vec3 _Playerpos);
 
-	// Spawns a new EnitityCube object at the given location. 
-	// This function will initialize the EntityCube object with 
-	// a unique ID and use the given _pos value.
-	void spawnEntityCubeAt(glm::vec3 _pos);
-
 	// Spawns a new EntityChest object at the given position if the 
 	// location is available. 
 	// Used to spawn a new chest in game. 
-	void spawnChestAt(glm::vec3 _pos);
+	void createChest(glm::vec3 _pos);
+
+	void spawnPlayer(glm::vec3 _pos);
 
 	bool isPositionOccupied(glm::vec3 _pos);
-
-	glm::vec3 snapToGrid(glm::vec3& pos);
 
 	bool checkPlayerCollisions();
 

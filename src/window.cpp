@@ -188,6 +188,8 @@ void Window::mainLoop(World* _world)
 
 		_world->setPlayerPos(myCamera->getCamPos());
 
+        _world->spawnPlayer();
+
         // update world
         // ----------------------------------------
 

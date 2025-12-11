@@ -84,6 +84,9 @@
     <ClCompile Include="imgui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\entityManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\window.hpp">
@@ -122,7 +125,7 @@
     <ClInclude Include="include\entity\entity.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\entity\EntityCube.hpp">
+    <ClInclude Include="include\entity\entityCube.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\programLogger.hpp">
@@ -177,6 +180,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imstb_truetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\entityManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

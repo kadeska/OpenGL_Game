@@ -156,6 +156,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\entityManager.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -181,6 +182,7 @@
     <ClCompile Include="src\textRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\entityManager.hpp" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_glfw.h" />
@@ -194,7 +196,7 @@
     <ClInclude Include="include\entity\entityChest.hpp" />
     <ClInclude Include="include\camera3D.hpp" />
     <ClInclude Include="include\entity\entity.hpp" />
-    <ClInclude Include="include\entity\EntityCube.hpp" />
+    <ClInclude Include="include\entity\entityCube.hpp" />
     <ClInclude Include="include\FileManager.hpp" />
     <ClInclude Include="include\game3D.hpp" />
     <ClInclude Include="include\fragmentShaderSource.hpp" />

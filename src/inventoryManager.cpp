@@ -19,6 +19,7 @@ static unsigned const int __DEFAULT_INVENTORY_SIZE = 4;
 
 InventoryManager::InventoryManager(const int& _numberOfInventories)
 {
+	log("InventoryManager constructor");
 	inventories = std::vector<Inventory>(_numberOfInventories);
 }
 
