@@ -1,4 +1,12 @@
 #pragma once
+#include <vector>
+
+#include "entity/entity.hpp"
+#include "entity/entityCube.hpp"
+#include "entity/entityChest.hpp"
+#include "entity/entityPlayer.hpp"
+
+
 class EntityManager
 {
 private:
@@ -12,9 +20,14 @@ public:
 	void createEntityPlayer(glm::vec3 _cubeLocation);
 
 
+	std::vector<EntityCube*> getArrayOfCubes();
+	std::vector<EntityChest*> getArrayOfChests();
+
+
 	// ---------------------------------------------------------------UTILITIES---------------------------------------------------------
 	
 	bool isPositionOccupied(glm::vec3 _pos);
 	glm::vec3 snapToGrid(glm::vec3& pos);
+
 };
 

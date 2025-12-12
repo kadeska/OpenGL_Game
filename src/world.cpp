@@ -1,13 +1,12 @@
 #include <cmath>
 
-#include "../include/world.hpp"
+
 #include "../include/programLogger.hpp"
 #include "../include/vertexData.hpp"
 #include "../include/entityManager.hpp"
+#include "../include/world.hpp"
 
 
-//EntityPlayer* player = nullptr;
-EntityManager* entityManager = nullptr;
 
 
 using ProgramLogger::log;
@@ -80,7 +79,7 @@ void World::generateWorld(float seed)
 			// Create EntityCube instances up to the generated height
 			for (int z = 0; z < height; z++) {
 				glm::vec3 loc = { static_cast<float>(x), static_cast<float>(z), static_cast<float>(y) };
-				addCube(EntityCube(objectID++, loc)); // Assume cubeID is defined and incremented elsewhere
+				createCube(loc); // Assume cubeID is defined and incremented elsewhere
 			}
 		}
 	}
@@ -92,7 +91,7 @@ void World::generateWorld(float seed)
 	addChest(chest1);
 	addChest(chest2);*/
 
-	spawnChestAt(glm::vec3(13.0f, 3.0f, 18.0f));
+	createChest(glm::vec3(13.0f, 3.0f, 18.0f));
 }
 
 // this is the function to use to add a cube when generating a world
@@ -100,13 +99,11 @@ void World::createCube(glm::vec3 _pos) {
 	entityManager->createEntityCube(_pos);
 }
 
-// need to do
 void World::createChest(glm::vec3 _pos)
 {
 	entityManager->createEntityChest(_pos);
 }
 
-// do this
 void World::spawnPlayer(glm::vec3 _pos)
 {
 	entityManager->createEntityPlayer(_pos);
@@ -145,7 +142,7 @@ bool World::checkPlayerCollisions()
 	// check for physical collision here
 	for (int i = 0; i < 6; ++i) {
 		glm::vec3 checkPos = getPlayerPos() + directions[i];
-		if (isPositionOccupied(checkPos)) {
+		if (getEntityManager()->isPositionOccupied(checkPos)) {
 			log("Collision detected at position: (" +
 				std::to_string(checkPos.x) + ", " +
 				std::to_string(checkPos.y) + ", " +
@@ -170,7 +167,7 @@ bool World::checkForClosestInteractable()
 	float closestDistance = INTERACT_RANGE;
 
 	// Iterate through all chests to find the closest one within interaction range
-	for (EntityChest* chest : getEntityChests()) 
+	for (EntityChest* chest : getEntityManager()->getArrayOfChests())
 	{
 		// the distance between player and this chest
 		float distance = glm::distance(getPlayerPos(), chest->getEntityPosition());
@@ -201,7 +198,7 @@ bool World::checkForClosestInteractable()
 // ill keep this for now, but may not need it
 void World::setPlayerPos(glm::vec3 _Playerpos)
 {
-	//playerLocation = _Playerpos;
+	playerPosition = _Playerpos;
 }
 
 // this can be moved to the entityManager class
@@ -240,10 +237,25 @@ EntityChest* World::getClosestChest()
 
 bool World::isInRange(glm::vec3 playerPosition, glm::vec3 entityPosition, float interactRange) {
 	// Calculate the squared distance between player and entity
-	float distanceSquared = glm::distance(snapToGrid(playerPosition), entityPosition);
+	float distanceSquared = glm::distance(entityManager->snapToGrid(playerPosition), entityPosition);
 
 	// Compare the squared distance to the square of the interaction range to avoid square root
 	return distanceSquared <= (interactRange * interactRange);
+}
+
+std::vector<EntityCube*> World::getArrayOfCubes()
+{
+	return entityManager->getArrayOfCubes();
+}
+
+std::vector<EntityChest*> World::getArrayOfChests()
+{
+	return entityManager->getArrayOfChests();
+}
+
+EntityManager* World::getEntityManager()
+{
+	return entityManager;
 }
 
 World::~World()

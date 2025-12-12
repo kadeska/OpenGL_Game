@@ -1,3 +1,4 @@
+#include <glm/fwd.hpp>
 
 #include "../include/entity/entity.hpp"
 #include "../include/entity/entityCube.hpp"
@@ -6,7 +7,7 @@
 #include "../include/entityManager.hpp"
 
 #include "../include/programLogger.hpp"
-#include <glm/fwd.hpp>
+
 using ProgramLogger::log;
 using ProgramLogger::LogLevel;
 
@@ -63,6 +64,16 @@ void EntityManager::createEntityPlayer(glm::vec3 _playerLocation)
 		player = new EntityPlayer(snappedPos);
 		playerLocation = snappedPos;
 	}
+}
+
+std::vector<EntityCube*> EntityManager::getArrayOfCubes()
+{
+	return enitityCubeList;
+}
+
+std::vector<EntityChest*> EntityManager::getArrayOfChests()
+{
+	return enitityChestList;
 }
 
 

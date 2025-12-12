@@ -188,7 +188,7 @@ void Window::mainLoop(World* _world)
 
 		_world->setPlayerPos(myCamera->getCamPos());
 
-        _world->spawnPlayer();
+        //_world->spawnPlayer(myCamera->getCamPos());
 
         // update world
         // ----------------------------------------
@@ -253,18 +253,18 @@ void Window::renderScene(World*& _world)
     // render objects
 	// ------------------------------
     
-    for (EntityCube& cube : _world->getEntityCubes())
+    for (EntityCube* cube : _world->getArrayOfCubes())
     {
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, cube.getTexID()); 
+        glBindTexture(GL_TEXTURE_2D, cube->getTexID()); 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, cube.getEntityPosition()); 
+        model = glm::translate(model, cube->getEntityPosition()); 
         sceneShader->setMat4("model", model);
         glBindVertexArray(sceneShader->VAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
     }
-    for (EntityChest*& chest : _world->getEntityChests())
+    for (EntityChest* chest : _world->getArrayOfChests())
     {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, chest->getTextureID());
@@ -371,7 +371,7 @@ void Window::processInput(GLFWwindow*& _window, World*& _world)
     if (spacePressed && !spacePrevPressed) // Only on transition from not pressed to pressed
     {
         //log("Space key pressed");
-        _world->spawnEntityCubeAt(_world->getPlayerPos() + glm::vec3(2.0f, 0.0f, 0.0f));
+        _world->createCube(_world->getPlayerPos() + glm::vec3(2.0f, 0.0f, 0.0f));
     }
     spacePrevPressed = spacePressed; // Update previous state
 
@@ -403,7 +403,7 @@ void Window::processInput(GLFWwindow*& _window, World*& _world)
     if (spawnInteractable && !spawnInteractablePressed)
     {
         
-        _world->spawnChestAt(_world->getPlayerPos() + glm::vec3(2.0f, 0.0f, 0.0f));
+        _world->createChest(_world->getPlayerPos() + glm::vec3(2.0f, 0.0f, 0.0f));
     }
     spawnInteractablePressed = spawnInteractable;
     
@@ -441,8 +441,8 @@ void Window::processInput(GLFWwindow*& _window, World*& _world)
         glm::vec3 moveVec = myCamera->getCamFront() * velocity;
         glm::vec3 intendedPos = myCamera->getCamPos() + moveVec;
         glm::vec3 checkPos = intendedPos + glm::normalize(myCamera->getCamFront()) * myCamera->getCollisionRadius();
-        glm::vec3 gridCheckPos = _world->snapToGrid(checkPos);
-        if (!_world->isPositionOccupied(gridCheckPos)) {
+        glm::vec3 gridCheckPos = _world->getEntityManager()->snapToGrid(checkPos);  // <-----  snapToGrid and isPositionOccupied can be put in a helper class
+        if (!_world->getEntityManager()->isPositionOccupied(gridCheckPos)) {
             myCamera->setCamPos(intendedPos);
         }
     }
@@ -453,8 +453,8 @@ void Window::processInput(GLFWwindow*& _window, World*& _world)
         glm::vec3 moveVec = -myCamera->getCamFront() * velocity;
         glm::vec3 intendedPos = myCamera->getCamPos() + moveVec;
         glm::vec3 checkPos = intendedPos - glm::normalize(myCamera->getCamFront()) * myCamera->getCollisionRadius();
-        glm::vec3 gridCheckPos = _world->snapToGrid(checkPos);
-        if (!_world->isPositionOccupied(gridCheckPos)) {
+        glm::vec3 gridCheckPos = _world->getEntityManager()->snapToGrid(checkPos);
+        if (!_world->getEntityManager()->isPositionOccupied(gridCheckPos)) {
             myCamera->setCamPos(intendedPos);
         }
     }
@@ -465,8 +465,8 @@ void Window::processInput(GLFWwindow*& _window, World*& _world)
         glm::vec3 moveVec = -myCamera->getCamRight() * velocity;
         glm::vec3 intendedPos = myCamera->getCamPos() + moveVec;
         glm::vec3 checkPos = intendedPos - glm::normalize(myCamera->getCamRight()) * myCamera->getCollisionRadius();
-        glm::vec3 gridCheckPos = _world->snapToGrid(checkPos);
-        if (!_world->isPositionOccupied(gridCheckPos)) {
+        glm::vec3 gridCheckPos = _world->getEntityManager()->snapToGrid(checkPos);
+        if (!_world->getEntityManager()->isPositionOccupied(gridCheckPos)) {
             myCamera->setCamPos(intendedPos);
         }
     }
@@ -477,8 +477,8 @@ void Window::processInput(GLFWwindow*& _window, World*& _world)
         glm::vec3 moveVec = myCamera->getCamRight() * velocity;
         glm::vec3 intendedPos = myCamera->getCamPos() + moveVec;
         glm::vec3 checkPos = intendedPos + glm::normalize(myCamera->getCamRight()) * myCamera->getCollisionRadius();
-        glm::vec3 gridCheckPos = _world->snapToGrid(checkPos);
-        if (!_world->isPositionOccupied(gridCheckPos)) {
+        glm::vec3 gridCheckPos = _world->getEntityManager()->snapToGrid(checkPos);
+        if (!_world->getEntityManager()->isPositionOccupied(gridCheckPos)) {
             myCamera->setCamPos(intendedPos);
         }
     }
