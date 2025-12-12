@@ -29,8 +29,15 @@ TextRenderer textRenderer;
 
 TextureLoader textureLoader;
 
-// text rendering stuff
+
+std::string fontFile = "fonts/arial.ttf";
+std::string pausedText = "Paused";
+std::string interactText = "Interact using E";
+glm::vec3 textLoc = glm::vec3(5.0f, 2.0f, 3.0f);
+
+// inventory rendering stuff
 std::string inventoryData;
+std::string playerInvData = "Testing player inventory";
 
 // camera stuff
 
@@ -278,12 +285,6 @@ void Window::renderScene(World*& _world)
     }
 }
 
-std::string fontFile = "fonts/arial.ttf";
-std::string pausedText = "Paused";
-std::string interactText = "Interact using E";
-glm::vec3 textLoc = glm::vec3(5.0f, 2.0f, 3.0f);
-
-
 void Window::renderTextOverlays(World*& _world)
 {
     if (paused)
@@ -300,6 +301,22 @@ void Window::renderTextOverlays(World*& _world)
 
 void Window::renderImGuiOverlay(World*& _world)
 {
+    // player inventory
+    if (_world->getShoudRenderPlayerInventory()) 
+    {
+        ImVec2 text_size = ImGui::CalcTextSize(playerInvData.c_str(), nullptr, false, 0.0f);
+        ImVec2 window_position((SCR_WIDTH * 0.5) - 200, (SCR_HEIGHT * 0.5) + 190);
+        ImGui::SetNextWindowPos(window_position);
+        int line_count = text_size.y / ImGui::GetTextLineHeight();
+        ImGui::SetNextWindowSize(ImVec2(text_size.x + 200.0f, (line_count + 1) * ImGui::GetTextLineHeight() + 50.0f));
+
+        ImGui::Begin("Player Inventory");
+        //ImGui::Text("Camera Position: X: %.2f Y: %.2f Z: %.2f", myCamera->getCamPos().x, myCamera->getCamPos().y, myCamera->getCamPos().z);
+        ImGui::Text(playerInvData.c_str());
+        ImGui::End();
+    }
+
+    // other inventories
     if (_world->getShouldRenderInventory())
     {
         ImVec2 text_size = ImGui::CalcTextSize(inventoryData.c_str(), nullptr, false, 0.0f);
@@ -312,9 +329,8 @@ void Window::renderImGuiOverlay(World*& _world)
         //ImGui::Text("Camera Position: X: %.2f Y: %.2f Z: %.2f", myCamera->getCamPos().x, myCamera->getCamPos().y, myCamera->getCamPos().z);
         ImGui::Text(inventoryData.c_str());
         ImGui::End();
-        //ImGui::Render();
-        //ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
+
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
@@ -429,6 +445,19 @@ void Window::processInput(GLFWwindow*& _window, World*& _world)
         }*/
     }
     interactPressed = interact;
+
+
+    // TAB key edge detection for opening player inventory
+
+    bool openPlayerInv = glfwGetKey(_window, GLFW_KEY_TAB) == GLFW_PRESS;
+    if (openPlayerInv && !openPlayerInvPressed)
+    {
+        log("TAB pressed");
+        _world->togglePlayerInventory();
+    }
+    openPlayerInvPressed = openPlayerInv;
+
+
 
 
     // Movement keys (continuous)

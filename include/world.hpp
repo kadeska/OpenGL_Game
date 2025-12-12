@@ -16,12 +16,13 @@ private:
 	EntityChest* closestChest = nullptr;
 	//EntityChest* currentChest = nullptr;
 	//EntityChest* chestPtr = nullptr;
-	EntityChest* newChest = nullptr;     // = EntityChest(-1, 0, glm::vec3(0, 0, 0), "null");
+	//EntityChest* newChest = nullptr;     // = EntityChest(-1, 0, glm::vec3(0, 0, 0), "null");
 
 
 	glm::vec3 playerPosition;
 	bool inRangeOfInteractable = false;
 	bool shouldRenderInventory = false;
+	bool shouldRenderPlayerInventory = false;
 
 	void init(Shader* _shader, float _seed, int _worldSize);
 
@@ -60,15 +61,21 @@ public:
 	void updateWorld();
 
 	void setPlayerPos(glm::vec3 _Playerpos);
+	glm::vec3 getPlayerPos() { return playerPosition; }
+
+	void togglePlayerInventory();
 
 	bool checkPlayerCollisions();
 
-	glm::vec3 getPlayerPos() { return playerPosition; }
+	
 
 	// Returns value of inRangeOfInteractable
 	bool getInRangeOfInteracable();
 
 	bool getShouldRenderInventory();
+
+	bool getShoudRenderPlayerInventory();
+
 
 	EntityChest* getClosestChest();
 

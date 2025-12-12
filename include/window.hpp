@@ -33,6 +33,7 @@ public:
 	bool toggleGravityPressed = false;
 	bool spawnInteractablePressed = false;
 	bool interactPressed = false;
+	bool openPlayerInvPressed = false;
 
 
 	//GLFWwindow* window;

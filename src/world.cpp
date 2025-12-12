@@ -129,6 +129,12 @@ void World::updateWorld()
 
 }
 
+void World::togglePlayerInventory()
+{
+	shouldRenderPlayerInventory = !shouldRenderPlayerInventory;
+	log("ShouldRenderPlayerInventory = " + std::to_string(shouldRenderPlayerInventory));
+}
+
 bool World::checkPlayerCollisions()
 {
 	//glm::vec3 playerPosSnapped = snapToGrid(playerLocation);
@@ -220,6 +226,11 @@ bool World::getShouldRenderInventory()
 		shouldRenderInventory = false;
 	}
 	return shouldRenderInventory;
+}
+
+bool World::getShoudRenderPlayerInventory()
+{
+	return shouldRenderPlayerInventory;
 }
 
 // maybe move this to the entity manager
