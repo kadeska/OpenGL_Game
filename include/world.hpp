@@ -29,7 +29,7 @@ private:
 
 
 
-	void spawnPlayer(glm::vec3 _pos);
+	
 
 	float getDistance(const glm::vec3& pos1, const glm::vec3& pos2);
 
@@ -38,7 +38,6 @@ private:
 public:
 
 	bool showInventory = false;
-
 
 	/*
 	 Parameterized constructor that allows setting the seed for world generation
@@ -49,6 +48,8 @@ public:
 	void createWorld(float seed);
 
 	void generateWorld(float seed);
+
+	void spawnPlayer(glm::vec3 _pos);
 
 	void createCube(glm::vec3 _pos);
 
@@ -88,6 +89,11 @@ public:
 	std::vector<EntityChest*> getArrayOfChests();
 	//getArrayOf__();
 	EntityManager* getEntityManager();
+
+
+
+	// this function is for testing spawing of stuff
+	void test();
 
 
 	/*

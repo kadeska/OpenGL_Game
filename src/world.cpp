@@ -35,6 +35,7 @@ int worldSize = 0;
 World::World(Shader* _shader, float _seed, int _worldSize) 
 {
 	init(_shader, _seed, _worldSize);
+	//setPlayerPos({ 5, 5, 5 });
 	entityManager = new EntityManager();
 	enemyController = new EnemyController(entityManager);
 }
@@ -69,8 +70,6 @@ void World::createWorld(float seed)
 			}
 		}
 	}
-
-	//entityManager->createNormalEnemy({5, 5, 5});
 }
 
 void World::generateWorld(float seed)
@@ -273,6 +272,12 @@ std::vector<EntityChest*> World::getArrayOfChests()
 EntityManager* World::getEntityManager()
 {
 	return entityManager;
+}
+
+void World::test()
+{
+	entityManager->createNormalEnemy({ 5, 5, 5 });
+	enemyController->setEnemyTarget(entityManager->getPlayer(), entityManager->getNewNormalEnemy());
 }
 
 World::~World()

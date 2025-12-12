@@ -93,17 +93,17 @@ void EntityManager::createNormalEnemy(glm::vec3 _enemyLocation)
 	}
 }
 
-std::vector<EntityCube*>& EntityManager::getArrayOfCubes()
+std::vector<EntityCube*> EntityManager::getArrayOfCubes()
 {
 	return enitityCubeList;
 }
 
-std::vector<EntityChest*>& EntityManager::getArrayOfChests()
+std::vector<EntityChest*> EntityManager::getArrayOfChests()
 {
 	return enitityChestList;
 }
 
-std::vector<EnemyNormal*>& EntityManager::getArrayOfNormalEnemies()
+std::vector<EnemyNormal*> EntityManager::getArrayOfNormalEnemies()
 {
 	return normalEnemyList;
 }

@@ -9,16 +9,16 @@ World* myWorld;
 static const int WORLD_SIZE = 24;
 static const float WORLD_SEED = 0;
 
-static const float CAM_X = 5.0f;
-static const float CAM_Y = 2.0f;
-static const float CAM_Z = 5.0f;
+static const float PLAYER_X = 5.0f;
+static const float PLAYER_Y = 2.0f;
+static const float PLAYER_Z = 5.0f;
 
 
 Game3D::Game3D()
 {
 	// since window has no constructor, we don't need to instantiate it
     //myWindow = Window();
-	myWindow.initialize(CAM_X, CAM_Y, CAM_Z);
+	myWindow.initialize(PLAYER_X, PLAYER_Y, PLAYER_Z);
 	myWindow.createWindow();
 	myWindow.loadOpenGL();
 	myWindow.createShaderProgram();
@@ -26,8 +26,9 @@ Game3D::Game3D()
 
 	// Create world
 	myWorld = new World(myWindow.getSceneShader(), WORLD_SEED, WORLD_SIZE);
-	//myWorld->generateWorld(WORLD_SEED);
 	myWorld->createWorld(WORLD_SEED);
+	myWorld->spawnPlayer({PLAYER_X, PLAYER_Y, PLAYER_Z});
+	myWorld->test();
 }
 
 Game3D::~Game3D()

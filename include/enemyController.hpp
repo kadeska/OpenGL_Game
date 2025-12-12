@@ -2,6 +2,7 @@
 #include "entityManager.hpp"
 #include "entity/enemyBase.hpp"
 #include "entity/enemyNormal.hpp"
+#include "entity/entity.hpp"
 
 class EnemyController
 {

@@ -19,3 +19,17 @@ void EnemyBase::setTarget(BaseEntity* _target)
 {
 	_enemyData.target = _target;
 }
+
+void EnemyBase::pathfind()
+{
+	log("Pathfind....");
+
+	float distance = glm::distance(this->getEntityPosition(), _enemyData.target->getEntityPosition());
+
+
+}
+
+void EnemyBase::move()
+{
+	log("Move");
+}

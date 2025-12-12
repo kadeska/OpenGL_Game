@@ -41,7 +41,7 @@ std::string playerInvData = "Testing player inventory";
 
 // camera stuff
 
-Camera3D* myCamera;// = new Camera3D(glm::vec3(CAM_X, CAM_Y, CAM_Z));
+Camera3D* myCamera;
 const float YAW = 45.0f;
 const float PITCH = -30.0f;
 float lastX;
@@ -190,7 +190,8 @@ void Window::mainLoop(World* _world)
 		myCamera->applyGravity(deltaTime);
 		myCamera->updatePosition(deltaTime);
 
-		// set player position after updating camera position
+		// set player position after updating camera position, 
+        // Players location must be set before world update
         // ----------------------------------
 
 		_world->setPlayerPos(myCamera->getCamPos());

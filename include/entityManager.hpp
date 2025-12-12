@@ -22,9 +22,9 @@ public:
 	void createNormalEnemy(glm::vec3 _enemyLocation);
 
 
-	std::vector<EntityCube*>& getArrayOfCubes();
-	std::vector<EntityChest*>& getArrayOfChests();
-	std::vector<EnemyNormal*>& getArrayOfNormalEnemies();
+	std::vector<EntityCube*> getArrayOfCubes();
+	std::vector<EntityChest*> getArrayOfChests();
+	std::vector<EnemyNormal*> getArrayOfNormalEnemies();
 
 	EntityCube* getNewCube();
 	EntityChest* getNewChest();

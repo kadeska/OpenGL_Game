@@ -1,4 +1,9 @@
+
+#include "../include/entityManager.hpp"
+#include "../include/entity/entity.hpp"
+
 #include "../include/enemyController.hpp"
+
 
 EnemyController::EnemyController(EntityManager* _entityManager)
 {
@@ -10,6 +15,8 @@ EnemyController::EnemyController(EntityManager* _entityManager)
 void EnemyController::setEnemyTarget(BaseEntity* _targetEntity, EnemyBase* _enemy)
 {
 	_enemy->setTarget(_targetEntity);
+	_enemy->pathfind();
+	
 }
 
 void EnemyController::update()
@@ -21,7 +28,7 @@ void EnemyController::update()
 	{
 		//log("Frame is multiple of 10");
 
-		for (EnemyNormal* normalEnemy : entityManager->getArrayOfNormalEnemies()) 
+		for (EnemyBase* normalEnemy : entityManager->getArrayOfNormalEnemies()) 
 		{
 			// move the enemy every 10 frames
 			normalEnemy->move();
@@ -32,10 +39,12 @@ void EnemyController::update()
 	{
 		//log("Frame is multiple of 10");
 
-		for (EnemyNormal* normalEnemy : entityManager->getArrayOfNormalEnemies())
+		for (EnemyBase* normalEnemy : entityManager->getArrayOfNormalEnemies())
 		{
 			// update path of each enemy every 500 frames
 			normalEnemy->pathfind();
 		}
 	}
+
+	// check if there is an enemy in range of a player, if so make the enemy attack
 }

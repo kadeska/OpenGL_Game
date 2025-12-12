@@ -21,6 +21,11 @@ public:
 
     EnemyStruct getEnemyData();
     void setTarget(BaseEntity* _target);
+
+    // this function should use some algorithm set an ordered array of locations (nodes) 
+    void pathfind();
+    // this function will move this enemy to the next node (location)
+    void move();
 private:
     EnemyStruct _enemyData;
 };  
