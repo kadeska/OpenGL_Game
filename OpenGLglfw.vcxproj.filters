@@ -18,49 +18,49 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\glad.c">
+    <ClCompile Include="src\misc\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\window.cpp">
+    <ClCompile Include="src\window\window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\game3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\shader.cpp">
+    <ClCompile Include="src\shader\shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\textureLoader.cpp">
+    <ClCompile Include="src\loader\textureLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\camera3D.cpp">
+    <ClCompile Include="src\camera\camera3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\world.cpp">
+    <ClCompile Include="src\world\world.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\vertexData.cpp">
+    <ClCompile Include="src\misc\vertexData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\entity.cpp">
+    <ClCompile Include="src\entity\entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\entityCube.cpp">
+    <ClCompile Include="src\entity\entityCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\textRenderer.cpp">
+    <ClCompile Include="src\render\textRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\entityChest.cpp">
+    <ClCompile Include="src\entity\entityChest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\inventoryManager.cpp">
+    <ClCompile Include="src\inventory\inventoryManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\inventory.cpp">
+    <ClCompile Include="src\inventory\inventory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\entityPlayer.cpp">
+    <ClCompile Include="src\entity\entityPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="imgui\imgui.cpp">
@@ -84,90 +84,84 @@
     <ClCompile Include="imgui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\entityManager.cpp">
+    <ClCompile Include="src\entity\entityManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\enemyBase.cpp">
+    <ClCompile Include="src\hostile\enemyBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\enemyNormal.cpp">
+    <ClCompile Include="src\hostile\enemyNormal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\enemyController.cpp">
+    <ClCompile Include="src\hostile\enemyController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh.cpp">
+    <ClCompile Include="src\model\mesh\mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\model.cpp">
+    <ClCompile Include="src\model\model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\window.hpp">
+    <ClInclude Include="src\window\window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\vertexData.hpp">
+    <ClInclude Include="src\misc\vertexData.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\vertexShaderSource.hpp">
+    <ClInclude Include="src\game3D.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\fragmentShaderSource.hpp">
+    <ClInclude Include="src\misc\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\game3D.hpp">
+    <ClInclude Include="src\shader\shader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\stb_image.h">
+    <ClInclude Include="src\loader\textureLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\shader.hpp">
+    <ClInclude Include="src\camera\camera3D.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\textureLoader.hpp">
+    <ClInclude Include="src\world\world.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\camera3D.hpp">
+    <ClInclude Include="src\world\worldData.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\world.hpp">
+    <ClInclude Include="src\entity\entity.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\worldData.hpp">
+    <ClInclude Include="src\entity\entityCube.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\entity\entity.hpp">
+    <ClInclude Include="src\misc\programLogger.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\entity\entityCube.hpp">
+    <ClInclude Include="src\render\textRenderer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\programLogger.hpp">
+    <ClInclude Include="src\entity\entityChest.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\textRenderer.hpp">
+    <ClInclude Include="src\misc\fileManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\entity\entityChest.hpp">
+    <ClInclude Include="src\inventory\inventoryManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\fileManager.hpp">
+    <ClInclude Include="src\inventory\inventory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\inventoryManager.hpp">
+    <ClInclude Include="src\inventory\item\itemTypes.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\inventory.hpp">
+    <ClInclude Include="src\inventory\item\item.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\itemTypes.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\item.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\entity\entityPlayer.hpp">
+    <ClInclude Include="src\entity\entityPlayer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="imgui\imconfig.h">
@@ -197,22 +191,22 @@
     <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\entityManager.hpp">
+    <ClInclude Include="src\entity\entityManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\entity\enemyBase.hpp">
+    <ClInclude Include="src\hostile\enemyBase.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\entity\enemyNormal.hpp">
+    <ClInclude Include="src\hostile\enemyNormal.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\enemyController.hpp">
+    <ClInclude Include="src\hostile\enemyController.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\model\mesh\mesh.hpp">
+    <ClInclude Include="src\model\mesh\mesh.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\model\model.hpp">
+    <ClInclude Include="src\model\model.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

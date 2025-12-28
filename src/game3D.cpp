@@ -1,7 +1,12 @@
-#include "../include/game3D.hpp"
-#include "../include/window.hpp"
-#include "../include/world.hpp"
+#include "game3D.hpp"
+#include "window/window.hpp"
+#include "world/world.hpp"
 
+
+#include "misc/programLogger.hpp"
+using ProgramLogger::log;
+using ProgramLogger::LogLevel;
+// log("-- Constructor", LogLevel::DEBUG);
 
 Window myWindow;
 World* myWorld;
@@ -16,6 +21,9 @@ static const float PLAYER_Z = 5.0f;
 
 Game3D::Game3D()
 {
+	// log("-- Constructor", LogLevel::DEBUG);
+	log("Game3D Constructor", LogLevel::DEBUG);
+
 	// since window has no constructor, we don't need to instantiate it
     //myWindow = Window();
 	myWindow.initialize(PLAYER_X, PLAYER_Y, PLAYER_Z);

@@ -2,8 +2,8 @@
 
 #include <glad/glad.h>
 
-#include "../include/game3D.hpp"
-#include "../include/programLogger.hpp"
+#include "game3D.hpp"
+#include "misc/programLogger.hpp"
 using::ProgramLogger::log;
 using::ProgramLogger::LogLevel;
 
@@ -28,7 +28,7 @@ void printMaxVertexAttributes()
 
 int main(int argc, char* argv[])
 {
-
+	log("Main entry", LogLevel::DEBUG);
 
 	Game3D* myGame3D = new Game3D();
 	printMaxVertexAttributes();
