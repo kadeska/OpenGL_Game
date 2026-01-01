@@ -14,7 +14,7 @@ public:
 	unsigned int textVBO, textVAO, VBO, VAO, EBO;
 
 	Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
-	~Shader();
+	~Shader() = default;
 
 	//void setUp();
 

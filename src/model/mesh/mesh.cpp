@@ -11,17 +11,44 @@ using ProgramLogger::LogLevel;
 // log("-- Constructor", LogLevel::DEBUG);
 
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
+Mesh::Mesh(Mesh&& other) noexcept
 {
-    log("Mesh Constructor", LogLevel::DEBUG);
-
-	this->vertices = vertices;
-	this->indices = indices;
-	this->textures = textures;
-	setupMesh();
+    *this = std::move(other);
 }
 
-void Mesh::Draw(Shader* _shader)
+Mesh& Mesh::operator=(Mesh&& other) noexcept
+{
+    if (this != &other)
+    {
+        // Transfer OpenGL handles
+        VAO = other.VAO;
+        VBO = other.VBO;
+        EBO = other.EBO;
+
+        // Transfer CPU-side data
+        vertices = std::move(other.vertices);
+        indices = std::move(other.indices);
+        textures = std::move(other.textures);
+
+        // Invalidate the old handles
+        other.VAO = 0;
+        other.VBO = 0;
+        other.EBO = 0;
+    }
+    return *this;
+}
+
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
+    : VAO(0), VBO(0), EBO(0)
+{
+    log("Mesh Constructor", LogLevel::DEBUG);
+    this->vertices = vertices;
+    this->indices = indices;
+    this->textures = textures;
+    setupMesh();
+}
+
+void Mesh::Draw(Shader& _shader)
 {
 
     unsigned int diffuseNr = 1;
@@ -37,14 +64,16 @@ void Mesh::Draw(Shader* _shader)
         else if (name == "texture_specular")
             number = std::to_string(specularNr++);
 
-        _shader->setInt(("material." + name + number).c_str(), i);
+        _shader.setInt(("material." + name + number).c_str(), i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
     glActiveTexture(GL_TEXTURE0);
 
     // draw mesh
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    //glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, nullptr);
+
     glBindVertexArray(0);
 }
 
@@ -74,4 +103,10 @@ void Mesh::setupMesh()
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
 
     glBindVertexArray(0);
+}
+
+Mesh::~Mesh() {
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
 }

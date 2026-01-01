@@ -21,29 +21,6 @@ class Window
 {
 public:
 
-
-	// settings
-
-	const unsigned int SCR_WIDTH = 800;
-	const unsigned int SCR_HEIGHT = 600;
-
-	bool paused = false;
-	bool escPrevPressed = false;
-	bool spacePrevPressed = false;
-	bool toggleGravityPressed = false;
-	bool spawnInteractablePressed = false;
-	bool interactPressed = false;
-	bool openPlayerInvPressed = false;
-
-
-	//GLFWwindow* window;
-	//Shader* sceneShader;
-	//Shader* textShader;
-
-	//TextRenderer textRenderer;
-
-	//TextureLoader textureLoader;
-
 	// functions
 	// Must call these functions in this spacific order.
 	// ---------------------------------------------------
@@ -56,8 +33,8 @@ public:
 	void loadTextures();
 	void mainLoop(World* _world);
 	void terminateWindow();
-	Shader* getSceneShader();
-	Shader* getTextShader();
+	//Shader* getSceneShader();
+	//Shader* getTextShader();
 
 
 	// ---------------------------------------------------

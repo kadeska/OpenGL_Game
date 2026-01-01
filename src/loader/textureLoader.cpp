@@ -20,7 +20,7 @@ void TextureLoader::loadTextures(Shader*& _ourShader)
     log("Loading textures. !!(This function isnt needed at this time while we load models)", LogLevel::DEBUG);
 
     // Load and create a texture
-    stbi_set_flip_vertically_on_load(true); // Flip textures vertically
+    //stbi_set_flip_vertically_on_load(true); // Flip textures vertically
 
     // Texture 1
     GLuint texture1;
@@ -63,9 +63,9 @@ void TextureLoader::loadTextures(Shader*& _ourShader)
     textures["bark"] = texture2; // Store texture in the map
 
     // Set texture samplers in the shader
-    _ourShader->use();
-    _ourShader->setInt("texture1", 0);
-    _ourShader->setInt("texture2", 1);
+    //_ourShader->use();
+    //_ourShader->setInt("texture1", 0);
+    //_ourShader->setInt("texture2", 1);
 
 }
 

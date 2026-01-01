@@ -177,6 +177,7 @@
     <ClCompile Include="src\entity\entity.cpp" />
     <ClCompile Include="src\entity\entityCube.cpp" />
     <ClCompile Include="src\model\model.cpp" />
+    <ClCompile Include="src\render\sceneRenderer.cpp" />
     <ClCompile Include="src\shader\shader.cpp" />
     <ClCompile Include="src\game3D.cpp" />
     <ClCompile Include="src\misc\glad.c" />
@@ -214,6 +215,7 @@
     <ClInclude Include="src\model\model.hpp" />
     <ClInclude Include="src\misc\programLogger.hpp" />
     <ClInclude Include="src\misc\vertexData.hpp" />
+    <ClInclude Include="src\render\sceneRenderer.hpp" />
     <ClInclude Include="src\window\window.hpp" />
     <ClInclude Include="src\misc\stb_image.h" />
     <ClInclude Include="src\shader\shader.hpp" />

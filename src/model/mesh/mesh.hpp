@@ -4,6 +4,8 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "../../shader/shader.hpp"
+#include <memory>
 
 constexpr auto MAX_BONE_INFLUENCE = 4;
 
@@ -33,15 +35,25 @@ struct Texture {
 class Mesh
 {
 public:
-	std::vector<Vertex>  vertices;
-	std::vector<unsigned int> indices;
-	std::vector<Texture> textures;
+    std::vector<Vertex>  vertices;
+    std::vector<unsigned int> indices;
+    std::vector<Texture> textures;
 
-	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
-	void Draw(Shader* _shader);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+    ~Mesh();
+
+    void Draw(Shader& _shader);
+
+    Mesh(const Mesh&) = delete;
+    Mesh& operator=(const Mesh&) = delete;
+
+    // Explicit move constructor / assignment
+    Mesh(Mesh&& other) noexcept;
+    Mesh& operator=(Mesh&& other) noexcept;
 
 private:
-	unsigned int VAO, VBO, EBO;
-	void setupMesh();
+    unsigned int VAO = 0, VBO = 0, EBO = 0;
+    void setupMesh();
 };
+
 

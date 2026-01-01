@@ -294,6 +294,11 @@ std::vector<EntityChest*> World::getArrayOfChests()
 
 EntityManager* World::getEntityManager()
 {
+	if (entityManager = nullptr) 
+	{
+		log("EntityManager is null", LogLevel::ERROR);
+		return nullptr;
+	}
 	return entityManager;
 }
 

@@ -20,6 +20,8 @@ using ProgramLogger::LogLevel;
 #include <iostream>
 #include <map>
 #include <vector>
+#include <memory>
+#include "../shader/shader.hpp"
 
 
 
@@ -31,7 +33,7 @@ Model::Model(const char* _path)
 	loadModel(_path);
 }
 
-void Model::Draw(Shader* _shader)
+void Model::Draw(Shader& _shader)
 {
 	for (unsigned int i = 0; i < meshes.size(); i++) 
 	{
