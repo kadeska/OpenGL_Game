@@ -42,6 +42,13 @@ int main(int argc, char* argv[])
 	myGame3D->start();
 	// clean up and exit
 	myGame3D->stop();
+
+
+	// I do the following below to keep the console window open until the user presses any button.
+
+	std::cout << '\n' << "Game has quit, press any button to close console... " << '\n';
+
+	std::cin.get(); // wait for user input before closing console
 	
     return 0;
 }

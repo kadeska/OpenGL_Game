@@ -7,10 +7,16 @@
 #include "input/inputManager.hpp"
 #include "../render/sceneRenderer.hpp"
 #include "../misc/programLogger.hpp"
-//#include "../misc/stb_image.h"
+#include "../misc/stateManager.hpp"
 
 using ProgramLogger::log;
 using ProgramLogger::LogLevel;
+
+using namespace StateManager;
+
+// make sure to only have one instance of GameStateManager
+GameStateManager gameState;
+World* world = nullptr;
 
 // --------------------------------------------------------
 // GLFW Callbacks
@@ -28,7 +34,7 @@ namespace {
 
         // Retrieve InputManager from window user pointer
         auto* inputManager = static_cast<InputManager*>(glfwGetWindowUserPointer(window));
-        if (inputManager)
+        if (inputManager && gameState.is(GameState::Playing))
             inputManager->processMouseMovement(xpos, ypos);
     }
 
@@ -37,7 +43,7 @@ namespace {
         if (!window) return;
 
         auto* inputManager = static_cast<InputManager*>(glfwGetWindowUserPointer(window));
-        if (inputManager)
+        if (inputManager && gameState.is(GameState::Playing))
             inputManager->processMouseScroll(yoffset);
     }
 
@@ -138,6 +144,9 @@ void Window::loadTextures()
 
 void Window::mainLoop(World* _world)
 {
+	world = _world;
+	gameState.setState(GameState::MainMenu);
+
 	if (!_world) // if the world has not been created yet
     {
         log("World pointer is null in Window::mainLoop", LogLevel::ERROR);
@@ -152,9 +161,15 @@ void Window::mainLoop(World* _world)
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        processInput(_world);
+        /*if (gameState.is(GameState::None)) 
+        {
+			log("GameState is None.", LogLevel::INFO);
+        }*/
 
-        sceneRenderer->RenderScene();
+        update();
+        //processInput(_world);
+
+        //sceneRenderer->RenderScene();
 
         glfwSwapBuffers(window.get());
         glfwPollEvents();
@@ -177,8 +192,46 @@ void Window::terminateWindow()
     glfwTerminate();
 }
 
+void Window::update()
+{
+	inputManager->checkESCToggle();
+
+    if (gameState.is(GameState::Paused)) 
+    {
+		log("GameState is Paused", LogLevel::STATE);
+    }
+
+    if (gameState.is(GameState::MainMenu))
+    {
+        // here we are in the main menu state, so render the main menu and process menu inputs
+        log("GameState is mainMenu", LogLevel::STATE);
+		gameState.setState(GameState::Playing);
+
+    }
+
+    if (gameState.is(GameState::Playing))
+    {
+        log("GameState is Playing", LogLevel::STATE);
+        processInput(world);
+        sceneRenderer->RenderScene();
+    }
+
+    if (gameState.is(GameState::GameOver)) 
+    {
+		log("GameState is GameOver", LogLevel::STATE);
+    }
+}
+
 void Window::processInput(World* _world)
 {
-    if (inputManager)
-        inputManager->processInput(deltaTime);
+    if (!inputManager)
+    {
+        log("InputManager is null...", LogLevel::ERROR);
+    }
+
+	inputManager->checkESCToggle();
+    inputManager->processInput(deltaTime);
+
+
+    
 }

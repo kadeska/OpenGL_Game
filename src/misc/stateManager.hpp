@@ -18,8 +18,8 @@ namespace StateManager
         GameState getState() const;
 
         bool is(GameState state) const;
+		void stateTransitionError(GameState fromState, GameState toState);
+        
 
-    private:
-        GameState currentState = GameState::None;
     };
 }

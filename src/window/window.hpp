@@ -41,6 +41,9 @@ private:
     // ---------------------------------------------------
     // Input and rendering
     // ---------------------------------------------------
+
+	// Will call the apropriate input processing and rendering functions based on game state.
+    void update();
     void processInput(World* world);
     void cleanupImGui();
 

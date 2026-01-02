@@ -93,12 +93,14 @@ log(<message>, LogLevel::<logLevel>);
 */
 namespace ProgramLogger {
     static const bool printDebug = true;
+	static const bool printState = true;
 
 	enum class LogLevel {
 		INFO,
 		WARNING,
 		ERROR,
-        DEBUG
+        DEBUG,
+        STATE
 	};
 
     struct ConsoleColors {
@@ -138,6 +140,9 @@ namespace ProgramLogger {
                 if (!printDebug) break;
                 std::println("{}[{}][DEBUG]: {}{}", consoleColors.green, timestamp, message, consoleColors.reset);
                 break;
+			case LogLevel::STATE:
+				if (!printState) break;
+				std::println("{}[{}][STATE]: {}{}", consoleColors.yellow, timestamp, message, consoleColors.reset);
         }
     }
 }

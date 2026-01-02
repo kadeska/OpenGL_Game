@@ -9,6 +9,7 @@ public:
     InputManager(GLFWwindow* window, SceneRenderer& renderer);
 
     void processInput(float deltaTime);
+	void checkESCToggle();
     void processMouseMovement(double xposIn, double yposIn);
     void processMouseScroll(double yoffset);
 

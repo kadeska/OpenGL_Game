@@ -42,15 +42,7 @@ void InputManager::moveCamera(const glm::vec3& direction, float deltaTime)
 // -----------------------------
 void InputManager::processInput(float deltaTime)
 {
-    // ----------------------------
-    // ESC: Pause toggle
-    // ----------------------------
-    if (isKeyPressedOnce(GLFW_KEY_ESCAPE, escPrevPressed))
-    {
-        paused = !paused;
-        glfwSetInputMode(window, GLFW_CURSOR, paused ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
-        firstMouse = true; // Reset mouse on pause toggle
-    }
+	//checkESCToggle();
 
     if (paused) return; // skip rest of input if paused
 
@@ -115,6 +107,19 @@ void InputManager::processInput(float deltaTime)
         moveCamera(-sceneRenderer.getCamera().getCamRight(), deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         moveCamera(sceneRenderer.getCamera().getCamRight(), deltaTime);
+}
+
+void InputManager::checkESCToggle()
+{
+    // ----------------------------
+    // ESC: Pause toggle
+    // ----------------------------
+    if (isKeyPressedOnce(GLFW_KEY_ESCAPE, escPrevPressed))
+    {
+        paused = !paused;
+        glfwSetInputMode(window, GLFW_CURSOR, paused ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+        firstMouse = true; // Reset mouse on pause toggle
+    }
 }
 
 // -----------------------------
