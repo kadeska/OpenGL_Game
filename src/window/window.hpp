@@ -9,6 +9,7 @@
 #include "input/inputManager.hpp"
 
 #include "../misc/stateManager.hpp"
+#include "../render/loadingScreenRenderer.hpp"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
@@ -38,6 +39,26 @@ public:
     void mainLoop(World* world);
     void terminateWindow();
 
+    int getScreenWidth() const {
+        return SCR_WIDTH;
+	}
+    int getScreenHeight() const {
+        return SCR_HEIGHT;
+    }
+
+    void swapBuffers() {
+        glfwSwapBuffers(window.get());
+	}
+    void pollEvents() {
+        glfwPollEvents();
+    }
+
+    void clearColor();
+
+    GLFWwindow* getGLFWwindow() {
+        return window.get();
+    }
+
 private:
     // ---------------------------------------------------
     // Input and rendering
@@ -52,6 +73,7 @@ private:
     // Members
     // ---------------------------------------------------
     std::unique_ptr<GLFWwindow, decltype(&glfwDestroyWindow)> window{ nullptr, glfwDestroyWindow };
+	LoadingScreenRenderer* loadingRenderer = nullptr;
     std::unique_ptr<SceneRenderer> sceneRenderer;
     std::unique_ptr<InputManager> inputManager;
 
@@ -67,4 +89,6 @@ private:
     std::string fontFile = "fonts/arial.ttf";
     std::string pausedText = "Paused";
     std::string interactText = "Interact using E";
+
+    
 };

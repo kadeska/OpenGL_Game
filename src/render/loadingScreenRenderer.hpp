@@ -1,9 +1,11 @@
 #pragma once
-class LoadingScreenRenderer
-{
-	public:
-	LoadingScreenRenderer();
-	~LoadingScreenRenderer() = default;
-	void renderLoadingScreen();
-};
+class Window;
 
+class LoadingScreenRenderer {
+public:
+    LoadingScreenRenderer(Window* window);
+    void render();
+
+private:
+    Window* window;
+};

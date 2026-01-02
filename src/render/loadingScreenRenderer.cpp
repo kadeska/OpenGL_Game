@@ -1,18 +1,26 @@
 #include "loadingScreenRenderer.hpp"
+#include "../window/window.hpp"
 #include "../shader/shader.hpp"
+#include "textRenderer.hpp"
 
-#include "../misc/programLogger.hpp"
-using ProgramLogger::log;
-using ProgramLogger::LogLevel;
+static Shader* shader = nullptr;
+static TextRenderer* textRenderer = nullptr;
 
-Shader* loadingScreenShader = nullptr;
+std::string text = "Loading...";
+std::string path = "fonts/arial.ttf";
+glm::vec3 color = {12, 0, 0};
 
-LoadingScreenRenderer::LoadingScreenRenderer()
+LoadingScreenRenderer::LoadingScreenRenderer(Window* _window)
+    : window(_window)
 {
-	log("LoadingScreenRenderer constructor", LogLevel::DEBUG);
-	loadingScreenShader = new Shader("shaders/textVertexShader.vs", "shaders/textFragmentShader.fs");
+    shader = new Shader(
+        "shaders/textVertexShader.vs",
+        "shaders/textFragmentShader.fs"
+    );
+    textRenderer = new TextRenderer();
 }
 
-void LoadingScreenRenderer::renderLoadingScreen()
+void LoadingScreenRenderer::render()
 {
+    textRenderer->renderText(text, shader, color, window->getScreenWidth() / 2 - 80, window->getScreenHeight() / 2, 1.0f, window->getScreenWidth(), window->getScreenHeight(), path);
 }

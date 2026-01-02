@@ -17,6 +17,7 @@ using namespace StateManager;
 // make sure to only have one instance of GameStateManager, here we have a referance to it.
 // the ref points to the StateManager in game3D.cpp
 GameStateManager gameState;
+//GLFWwindow* win = nullptr;
 World* world = nullptr;
 
 // --------------------------------------------------------
@@ -85,6 +86,7 @@ void Window::initialize(float _camX, float _camY, float _camZ)
 
 void Window::createWindow()
 {
+    log("Creating window", LogLevel::DEBUG);
     // 1. Create GLFW window
     GLFWwindow* win = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
     if (!win)
@@ -110,12 +112,12 @@ void Window::createWindow()
     //glfwSetWindowUserPointer(window.get(), inputManager.get());
 
     //// 5. Set GLFW callbacks (now safe, because objects exist)
-    //glfwSetFramebufferSizeCallback(window.get(), framebuffer_size_callback);
-    //glfwSetCursorPosCallback(window.get(), mouse_callback);
-    //glfwSetScrollCallback(window.get(), scroll_callback);
+    glfwSetFramebufferSizeCallback(window.get(), framebuffer_size_callback);
+    glfwSetCursorPosCallback(window.get(), mouse_callback);
+    glfwSetScrollCallback(window.get(), scroll_callback);
 
     //// 6. Set cursor input mode
-    //glfwSetInputMode(window.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window.get(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
     //log("Window created and callbacks set", LogLevel::DEBUG);
     log("Window created", LogLevel::DEBUG);
@@ -150,42 +152,73 @@ void Window::loadTextures()
     log("loadTextures is no longer needed", LogLevel::WARNING);
 }
 
-void Window::mainLoop(World* _world)
+//void Window::mainLoop(World* _world)
+//{
+//	world = _world;
+//	//gameState.setState(GameState::MainMenu);
+//
+//	if (!_world) // if the world has not been created yet
+//    {
+//        log("World pointer is null in Window::mainLoop", LogLevel::ERROR);
+//        // Render main menu
+//        //return;
+//    }
+//
+//    glEnable(GL_DEPTH_TEST);
+//
+//    while (!glfwWindowShouldClose(window.get()))
+//    {
+//        float currentFrame = static_cast<float>(glfwGetTime());
+//        deltaTime = currentFrame - lastFrame;
+//        lastFrame = currentFrame;
+//
+//        /*if (gameState.is(GameState::None)) 
+//        {
+//			log("GameState is None.", LogLevel::INFO);
+//        }*/
+//
+//        update();
+//        //processInput(_world);
+//
+//        //sceneRenderer->RenderScene();
+//
+//        glfwSwapBuffers(window.get());
+//        glfwPollEvents();
+//
+//        GLenum err;
+//        while ((err = glGetError()) != GL_NO_ERROR)
+//            std::cout << "OpenGL error: " << err << std::endl;
+//    }
+//}
+
+void Window::mainLoop(World* world)
 {
-	world = _world;
-	//gameState.setState(GameState::MainMenu);
-
-	if (!_world) // if the world has not been created yet
+    if (!loadingRenderer) 
     {
-        log("World pointer is null in Window::mainLoop", LogLevel::ERROR);
-        // Render main menu
-        //return;
+		loadingRenderer = new LoadingScreenRenderer(this);
     }
+    while (!glfwWindowShouldClose(getGLFWwindow())) {
+        clearColor();
 
-    glEnable(GL_DEPTH_TEST);
+        switch (gameState.getState()) {
 
-    while (!glfwWindowShouldClose(window.get()))
-    {
-        float currentFrame = static_cast<float>(glfwGetTime());
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+        case GameState::LOADING:
+            loadingRenderer->render();
+            break;
 
-        /*if (gameState.is(GameState::None)) 
-        {
-			log("GameState is None.", LogLevel::INFO);
-        }*/
+        case GameState::PLAYING:
+            //world->update();
+            //world->render();
+            break;
+        }
 
-        update();
-        //processInput(_world);
+        swapBuffers();
+        pollEvents();
 
-        //sceneRenderer->RenderScene();
-
-        glfwSwapBuffers(window.get());
-        glfwPollEvents();
-
-        GLenum err;
-        while ((err = glGetError()) != GL_NO_ERROR)
-            std::cout << "OpenGL error: " << err << std::endl;
+        // Fake loading completion for now
+        if (gameState.is(GameState::LOADING)) {
+            gameState.setState(GameState::PLAYING);
+        }
     }
 }
 
@@ -199,6 +232,19 @@ void Window::cleanupImGui()
 void Window::terminateWindow()
 {
     glfwTerminate();
+}
+
+void Window::clearColor()
+{
+	if (gameState.is(GameState::LOADING))
+    {
+        glClearColor(1.2f, 1.3f, 1.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        return;
+    }
+    
+    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Window::update()

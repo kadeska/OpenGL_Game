@@ -31,6 +31,7 @@ unsigned int VAO, VBO;
 
 TextRenderer::TextRenderer()
 {
+    log("TextRenderer constructor", LogLevel::DEBUG);
 }
 
 TextRenderer::~TextRenderer()
@@ -39,7 +40,7 @@ TextRenderer::~TextRenderer()
 
 int TextRenderer::renderText(std::string& _text, Shader*& shader, glm::vec3& color, float x, float y, float scale, int _screenWidth, int _screenHeight, std::string& _fontFilePath)
 {
-    //log("Rendering text");
+    //log("Rendering text", LogLevel::DEBUG);
 
     // OpenGL state
     // ------------
