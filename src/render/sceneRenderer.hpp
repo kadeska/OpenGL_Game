@@ -20,9 +20,20 @@ private:
 	std::unique_ptr<Shader> textShader;
 	std::unique_ptr<Camera3D> camera;
 	int sceneWidth, sceneHeight;
+
+	void loadModels();
+	void initCamera();
+	void initSceneShader();
+	void initProjectionMatrix();
+	void initViewMatrix();
+	void drawRenderables();
+	void populateRenderables();
+	void useSceneShader();
+
 public:
 	SceneRenderer(const unsigned int _screenWidth, const unsigned int _screenHeight);
 	~SceneRenderer() = default;
+
 
 	void RenderScene();
 

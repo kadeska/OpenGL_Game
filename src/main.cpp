@@ -7,6 +7,8 @@
 using::ProgramLogger::log;
 using::ProgramLogger::LogLevel;
 
+static int state;
+
 
 // Must be called after loading OpenGL functions.
 // In this case, after the window loads OpenGL, 

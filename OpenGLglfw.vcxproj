@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\misc\stateManager.cpp" />
     <ClCompile Include="src\misc\stbimage.cpp" />
     <ClCompile Include="src\model\mesh\mesh.cpp" />
     <ClCompile Include="src\hostile\enemyBase.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="src\game3D.hpp" />
     <ClInclude Include="src\inventory\item\item.hpp" />
     <ClInclude Include="src\inventory\item\itemTypes.hpp" />
+    <ClInclude Include="src\misc\stateManager.hpp" />
     <ClInclude Include="src\model\mesh\mesh.hpp" />
     <ClInclude Include="src\model\model.hpp" />
     <ClInclude Include="src\misc\programLogger.hpp" />

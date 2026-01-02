@@ -16,6 +16,9 @@ using ProgramLogger::log;
 using ProgramLogger::LogLevel;
 using LogLevel::DEBUG;
 
+glm::mat4 projection;
+glm::mat4 view;
+
 
 
 // the vector of models to use for rendering each gameObject.
@@ -54,18 +57,25 @@ std::vector<glm::vec3> donutPositions = {
 //    textShader = std::make_unique<Shader>("shaders/textVertexShader.vs", "shaders/textFragmentShader.fs");
 //}
 
-SceneRenderer::SceneRenderer(unsigned int w, unsigned int h)
+SceneRenderer::SceneRenderer(unsigned int w, unsigned int h) : sceneWidth(w), sceneHeight(h)
 {
     log("SceneRenderer constructor", DEBUG);
+    loadModels();
+    initCamera();
+    initSceneShader();
+    populateRenderables();
+}
 
-    sceneWidth = w;
-    sceneHeight = h;
-
+void SceneRenderer::loadModels()
+{
     log("Loading models", DEBUG);
 
     models.push_back(std::make_unique<Model>("models/backpack/backpack.obj"));
     models.push_back(std::make_unique<Model>("models/donut/donut.obj"));
+}
 
+void SceneRenderer::initCamera()
+{
     log("Creating camera", DEBUG);
 
     camera = std::make_unique<Camera3D>(
@@ -74,17 +84,46 @@ SceneRenderer::SceneRenderer(unsigned int w, unsigned int h)
         -90.0f,
         0.0f
     );
+}
 
+void SceneRenderer::initSceneShader()
+{
     log("Creating Scene Shader", DEBUG);
 
     sceneShader = std::make_unique<Shader>(
         "shaders/vertexShader.vs",
         "shaders/fragmentShader.fs"
     );
+}
 
+void SceneRenderer::initProjectionMatrix()
+{
+    projection = glm::perspective(
+        glm::radians(camera->getCamZoom()),
+        (float)sceneWidth / (float)sceneHeight,
+        0.1f,
+        100.0f
+    );
+}
+
+void SceneRenderer::initViewMatrix()
+{
+    view = camera->GetViewMatrix();
+    sceneShader->setMat4("projection", projection);
+    sceneShader->setMat4("view", view);
+}
+
+void SceneRenderer::drawRenderables()
+{
+    for (const Renderable& r : renderables) {
+        sceneShader->setMat4("model", r.transform);
+        r.model->Draw(*sceneShader);
+    }
+}
+
+void SceneRenderer::populateRenderables()
+{
     log("Populating renderables", DEBUG);
-
-    // Populate renderables
     for (const glm::vec3& pos : backpackPositions)
     {
         glm::mat4 transform(1.0f);
@@ -97,6 +136,11 @@ SceneRenderer::SceneRenderer(unsigned int w, unsigned int h)
     }
 }
 
+void SceneRenderer::useSceneShader()
+{
+    sceneShader->use();
+}
+
 void SceneRenderer::RenderScene()
 {
     // clear color
@@ -104,41 +148,10 @@ void SceneRenderer::RenderScene()
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // use scene shader
-
-    sceneShader->use();
-
-    // set projection matrix
-
-    glm::mat4 projection = glm::perspective(
-        glm::radians(camera->getCamZoom()),
-        (float)sceneWidth / (float)sceneHeight,
-        0.1f,
-        100.0f
-    );
-
-    // set view matrix
-
-    glm::mat4 view = camera->GetViewMatrix();
-    sceneShader->setMat4("projection", projection);
-    sceneShader->setMat4("view", view);
-
-    // Draw models
-
-    for (const Renderable& r : renderables) {
-        sceneShader->setMat4("model", r.transform);
-        r.model->Draw(*sceneShader);
-    }
-    /*for (const glm::vec3& pos : backpackPositions)
-    {
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, pos);
-        model = glm::scale(model, glm::vec3(1.0f));
-
-        sceneShader->setMat4("model", model);
-
-        models.at(0)->Draw(*sceneShader); 
-    }*/
+    useSceneShader();
+    initProjectionMatrix();
+    initViewMatrix();
+    drawRenderables();
 }
 
 Camera3D& SceneRenderer::getCamera()

@@ -138,7 +138,7 @@ void Window::loadTextures()
 
 void Window::mainLoop(World* _world)
 {
-    if (!_world)
+	if (!_world) // if the world has not been created yet
     {
         log("World pointer is null in Window::mainLoop", LogLevel::ERROR);
         //return;
