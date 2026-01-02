@@ -179,6 +179,8 @@
     <ClCompile Include="src\entity\entity.cpp" />
     <ClCompile Include="src\entity\entityCube.cpp" />
     <ClCompile Include="src\model\model.cpp" />
+    <ClCompile Include="src\render\loadingScreenRenderer.cpp" />
+    <ClCompile Include="src\render\menuRenderer.cpp" />
     <ClCompile Include="src\render\sceneRenderer.cpp" />
     <ClCompile Include="src\shader\shader.cpp" />
     <ClCompile Include="src\game3D.cpp" />
@@ -218,6 +220,8 @@
     <ClInclude Include="src\model\model.hpp" />
     <ClInclude Include="src\misc\programLogger.hpp" />
     <ClInclude Include="src\misc\vertexData.hpp" />
+    <ClInclude Include="src\render\loadingScreenRenderer.hpp" />
+    <ClInclude Include="src\render\menuRenderer.hpp" />
     <ClInclude Include="src\render\sceneRenderer.hpp" />
     <ClInclude Include="src\window\input\inputManager.hpp" />
     <ClInclude Include="src\window\window.hpp" />

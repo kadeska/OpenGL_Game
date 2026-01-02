@@ -4,16 +4,23 @@ namespace StateManager
 {
     enum class GameState
     {
-        None,
-        MainMenu,
-        Playing,
-        Paused,
-        GameOver
+        NONE,
+        LOADING,
+        MAIN_MENU,
+        PLAYING,
+        PAUSED,
+        GAME_OVER
     };
 
     class GameStateManager
     {
+    private:
+		void proccessStateTransition();
     public:
+        bool registerRenderLoadingScreenCallback(void(*func)());
+        bool registerRenderMainMenuCallback(void(*func)());
+        bool registerRenderWorldCallback(void(*func)());
+
         void setState(GameState newState);
         GameState getState() const;
 

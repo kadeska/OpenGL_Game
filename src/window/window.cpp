@@ -14,7 +14,8 @@ using ProgramLogger::LogLevel;
 
 using namespace StateManager;
 
-// make sure to only have one instance of GameStateManager
+// make sure to only have one instance of GameStateManager, here we have a referance to it.
+// the ref points to the StateManager in game3D.cpp
 GameStateManager gameState;
 World* world = nullptr;
 
@@ -34,7 +35,7 @@ namespace {
 
         // Retrieve InputManager from window user pointer
         auto* inputManager = static_cast<InputManager*>(glfwGetWindowUserPointer(window));
-        if (inputManager && gameState.is(GameState::Playing))
+        if (inputManager && gameState.is(GameState::PLAYING))
             inputManager->processMouseMovement(xpos, ypos);
     }
 
@@ -43,11 +44,17 @@ namespace {
         if (!window) return;
 
         auto* inputManager = static_cast<InputManager*>(glfwGetWindowUserPointer(window));
-        if (inputManager && gameState.is(GameState::Playing))
+        if (inputManager && gameState.is(GameState::PLAYING))
             inputManager->processMouseScroll(yoffset);
     }
 
 } // namespace
+
+Window::Window(StateManager::GameStateManager& _gameStateManager)
+{
+    log("Window constructor", LogLevel::DEBUG);
+	gameState = _gameStateManager;
+}
 
 // --------------------------------------------------------
 // Window Methods
@@ -93,24 +100,25 @@ void Window::createWindow()
 	// now that contexts exist, we can load OpenGL functions
 	loadOpenGL();
 
-    // 2. Initialize sceneRenderer first
-    sceneRenderer = std::make_unique<SceneRenderer>(SCR_WIDTH, SCR_HEIGHT);
+    //// 2. Initialize sceneRenderer first
+    //sceneRenderer = std::make_unique<SceneRenderer>(SCR_WIDTH, SCR_HEIGHT);
 
-    // 3. Initialize InputManager
-    inputManager = std::make_unique<InputManager>(window.get(), *sceneRenderer);
+    //// 3. Initialize InputManager
+    //inputManager = std::make_unique<InputManager>(window.get(), *sceneRenderer);
 
-    // 4. Attach InputManager pointer to window user pointer for callbacks
-    glfwSetWindowUserPointer(window.get(), inputManager.get());
+    //// 4. Attach InputManager pointer to window user pointer for callbacks
+    //glfwSetWindowUserPointer(window.get(), inputManager.get());
 
-    // 5. Set GLFW callbacks (now safe, because objects exist)
-    glfwSetFramebufferSizeCallback(window.get(), framebuffer_size_callback);
-    glfwSetCursorPosCallback(window.get(), mouse_callback);
-    glfwSetScrollCallback(window.get(), scroll_callback);
+    //// 5. Set GLFW callbacks (now safe, because objects exist)
+    //glfwSetFramebufferSizeCallback(window.get(), framebuffer_size_callback);
+    //glfwSetCursorPosCallback(window.get(), mouse_callback);
+    //glfwSetScrollCallback(window.get(), scroll_callback);
 
-    // 6. Set cursor input mode
-    glfwSetInputMode(window.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //// 6. Set cursor input mode
+    //glfwSetInputMode(window.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    log("Window created and callbacks set", LogLevel::DEBUG);
+    //log("Window created and callbacks set", LogLevel::DEBUG);
+    log("Window created", LogLevel::DEBUG);
 }
 
 
@@ -145,11 +153,12 @@ void Window::loadTextures()
 void Window::mainLoop(World* _world)
 {
 	world = _world;
-	gameState.setState(GameState::MainMenu);
+	//gameState.setState(GameState::MainMenu);
 
 	if (!_world) // if the world has not been created yet
     {
         log("World pointer is null in Window::mainLoop", LogLevel::ERROR);
+        // Render main menu
         //return;
     }
 
@@ -196,27 +205,27 @@ void Window::update()
 {
 	inputManager->checkESCToggle();
 
-    if (gameState.is(GameState::Paused)) 
+    if (gameState.is(GameState::PAUSED)) 
     {
 		log("GameState is Paused", LogLevel::STATE);
     }
 
-    if (gameState.is(GameState::MainMenu))
+    if (gameState.is(GameState::MAIN_MENU))
     {
         // here we are in the main menu state, so render the main menu and process menu inputs
         log("GameState is mainMenu", LogLevel::STATE);
-		gameState.setState(GameState::Playing);
+		gameState.setState(GameState::PLAYING);
 
     }
 
-    if (gameState.is(GameState::Playing))
+    if (gameState.is(GameState::PLAYING))
     {
         log("GameState is Playing", LogLevel::STATE);
         processInput(world);
         sceneRenderer->RenderScene();
     }
 
-    if (gameState.is(GameState::GameOver)) 
+    if (gameState.is(GameState::GAME_OVER)) 
     {
 		log("GameState is GameOver", LogLevel::STATE);
     }

@@ -92,17 +92,24 @@ or
 log(<message>, LogLevel::<logLevel>);
 */
 namespace ProgramLogger {
+    enum class LogLevel {
+        INFO,
+        WARNING,
+        ERROR,
+        DEBUG,
+        STATE
+    };
+
     static const bool printDebug = true;
 	static const bool printState = true;
 
-	enum class LogLevel {
-		INFO,
-		WARNING,
-		ERROR,
-        DEBUG,
-        STATE
-	};
+    static bool foo(void(*func)(const std::string&, LogLevel))
+    {
+        func("Testing", LogLevel::INFO);
+        return true;
+    }
 
+	
     struct ConsoleColors {
         const std::string reset = "\033[0m";
         const std::string red = "\033[31m";

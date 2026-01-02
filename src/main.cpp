@@ -7,7 +7,11 @@
 using::ProgramLogger::log;
 using::ProgramLogger::LogLevel;
 
-static int state;
+
+//static void bar(int a) 
+//{
+//	std::cout << "Value: " << a << std::endl;
+//}
 
 
 // Must be called after loading OpenGL functions.
@@ -26,6 +30,8 @@ int main(int argc, char* argv[])
 {
 	log("Main entry", LogLevel::DEBUG);
 
+	//ProgramLogger::foo(log);
+
 	// I should first initialize a system file manager for cross-platform file handling.
 	// render loading screen? ---------------
 	// load assets --------------------------
@@ -37,15 +43,15 @@ int main(int argc, char* argv[])
 	// initialize game
 	Game3D* myGame3D = new Game3D();
 	// print max vertex attributes for debugging
-	printMaxVertexAttributes();
+	//printMaxVertexAttributes();
 	// start game loop
-	myGame3D->start();
+	//myGame3D->start();
 	// clean up and exit
-	myGame3D->stop();
+	//myGame3D->stop();
 
 
 	// I do the following below to keep the console window open until the user presses any button.
-
+	std::cout << '\n' << "Game quit in State: " + std::to_string(static_cast<int>(myGame3D->gameStateManager.getState())) << '\n';
 	std::cout << '\n' << "Game has quit, press any button to close console... " << '\n';
 
 	std::cin.get(); // wait for user input before closing console

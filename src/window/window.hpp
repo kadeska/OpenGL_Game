@@ -8,6 +8,8 @@
 #include "../shader/shader.hpp"
 #include "input/inputManager.hpp"
 
+#include "../misc/stateManager.hpp"
+
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
@@ -24,9 +26,8 @@ class SceneRenderer;
 class Window
 {
 public:
-    // ---------------------------------------------------
-    // Public API — call in this order
-    // ---------------------------------------------------
+    Window(StateManager::GameStateManager& _gameStateManager);
+    ~Window() = default;
     void initialize(float camX, float camY, float camZ);
     //void initSceneRenderer();
     void createWindow();

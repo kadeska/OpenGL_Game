@@ -9,8 +9,55 @@ using LogLevel::STATE;
 using namespace StateManager;
 
 static bool success = false;
-static GameState currentState = GameState::None;
-static GameState previousState = GameState::None;
+static GameState currentState = GameState::NONE;
+static GameState previousState = GameState::NONE;
+
+
+void(*func)();
+
+
+bool StateManager::GameStateManager::registerRenderLoadingScreenCallback(void(*_func)())
+{
+    if (!_func) 
+    {
+        log("Failed to register loading screen render callback: function pointer is null", STATE);
+		return false;
+    }
+	// Store the callback function pointer
+	func = _func;
+    func();
+    return true;
+}
+
+void StateManager::GameStateManager::proccessStateTransition()
+{
+    // Handle any additional logic needed during state transitions here.
+    // For example, initializing resources when entering PLAYING state,
+    // or cleaning up when leaving it.
+
+    switch (currentState)
+    {
+    case GameState::LOADING:
+        // Initialize loading resources
+        log("LOADING GAME DATA");
+        func();
+        break;
+    case GameState::MAIN_MENU:
+        // Setup main menu
+        break;
+    case GameState::PLAYING:
+        // Start game logic
+        break;
+    case GameState::PAUSED:
+        // Pause game logic
+        break;
+    case GameState::GAME_OVER:
+        // Handle game over logic
+        break;
+    default:
+        break;
+	}
+}
 
 void GameStateManager::setState(GameState newState)
 {
@@ -25,40 +72,48 @@ void GameStateManager::setState(GameState newState)
 
     switch (currentState)
     {
-    case GameState::None:
-        if (newState == GameState::MainMenu) 
+    case GameState::NONE:
+        if (newState == GameState::MAIN_MENU || newState == GameState::LOADING) 
         {
             currentState = newState;
 			success = true;
         }
         break;
 
-    case GameState::MainMenu:
-        if (newState == GameState::Playing)
+    case GameState::LOADING:
+        if (newState == GameState::MAIN_MENU || newState == GameState::PLAYING)
         {
             currentState = newState;
 			success = true;
         }
         break;
 
-    case GameState::Playing:
-        if (newState == GameState::Paused || newState == GameState::GameOver)
+    case GameState::MAIN_MENU:
+        if (newState == GameState::PLAYING)
+        {
+            currentState = newState;
+			success = true;
+        }
+        break;
+
+    case GameState::PLAYING:
+        if (newState == GameState::PAUSED || newState == GameState::GAME_OVER)
         {
             currentState = newState;
             success = true;
         }
         break;
 
-    case GameState::Paused:
-        if (newState == GameState::Playing || newState == GameState::MainMenu)
+    case GameState::PAUSED:
+        if (newState == GameState::PLAYING || newState == GameState::MAIN_MENU)
         {
             currentState = newState;
             success = true;
         }
         break;
 
-    case GameState::GameOver:
-        if (newState == GameState::MainMenu)
+    case GameState::GAME_OVER:
+        if (newState == GameState::MAIN_MENU)
         {
             currentState = newState;
             success = true;
@@ -72,7 +127,8 @@ void GameStateManager::setState(GameState newState)
     }
     else 
     {
-		log("Transitioned to GameState: " + std::to_string(static_cast<int>(newState)) + ", From GameState: " + std::to_string(static_cast<int>(previousState)), STATE);
+        log("Transitioned from GameState: " + std::to_string(static_cast<int>(previousState)) + ", To GameState: " + std::to_string(static_cast<int>(newState)), STATE);
+		proccessStateTransition();
     }
 
     previousState = newState;
