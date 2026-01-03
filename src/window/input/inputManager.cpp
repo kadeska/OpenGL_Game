@@ -2,8 +2,6 @@
 
 #include "inputManager.hpp"
 
-#include <imgui/imgui.h>
-
 #include "../../misc/programLogger.hpp"
 using ProgramLogger::log;
 using ProgramLogger::LogLevel;
@@ -45,8 +43,6 @@ void InputManager::moveCamera(const glm::vec3& direction, float deltaTime)
 // -----------------------------
 void InputManager::processInput(float deltaTime)
 {
-    if (ImGui::GetIO().WantCaptureKeyboard)
-        return;
 
 	//checkESCToggle();
 

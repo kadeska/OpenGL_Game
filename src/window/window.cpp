@@ -228,12 +228,6 @@ void Window::mainLoop()
         swapBuffers();
 
 
-        // Fake loading completion for now
-        //if (gameState.is(GameState::LOADING)) {
-        //    gameState.setState(GameState::PLAYING);
-        //}
-
-
         GLenum err;
                 while ((err = glGetError()) != GL_NO_ERROR)
                     std::cout << "OpenGL error: " << err << std::endl;
@@ -270,6 +264,9 @@ void Window::processInput(World* _world)
     {
         log("InputManager is null...", LogLevel::ERROR);
     }
+
+    if (ImGui::GetIO().WantCaptureKeyboard)
+        return;
 
 	inputManager->checkESCToggle();
     inputManager->processInput(deltaTime);
