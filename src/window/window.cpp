@@ -11,12 +11,9 @@
 
 using ProgramLogger::log;
 using ProgramLogger::LogLevel;
-
 using namespace StateManager;
 
-// make sure to only have one instance of GameStateManager, here we have a referance to it.
-// the ref points to the StateManager in game3D.cpp
-GameStateManager gameState;
+
 //GLFWwindow* win = nullptr;
 World* world = nullptr;
 
@@ -36,7 +33,7 @@ namespace {
 
         // Retrieve InputManager from window user pointer
         auto* inputManager = static_cast<InputManager*>(glfwGetWindowUserPointer(window));
-        if (inputManager && gameState.is(GameState::PLAYING))
+        if (inputManager /*&& gameState.is(GameState::PLAYING)*/)
             inputManager->processMouseMovement(xpos, ypos);
     }
 
@@ -45,16 +42,15 @@ namespace {
         if (!window) return;
 
         auto* inputManager = static_cast<InputManager*>(glfwGetWindowUserPointer(window));
-        if (inputManager && gameState.is(GameState::PLAYING))
+        if (inputManager /*&& gameState.is(GameState::PLAYING)*/)
             inputManager->processMouseScroll(yoffset);
     }
 
 } // namespace
 
-Window::Window(StateManager::GameStateManager& _gameStateManager)
+Window::Window(StateManager::GameStateManager& _gameStateManager) : gameState(_gameStateManager)
 {
     log("Window constructor", LogLevel::DEBUG);
-	gameState = _gameStateManager;
 }
 
 // --------------------------------------------------------
@@ -63,6 +59,10 @@ Window::Window(StateManager::GameStateManager& _gameStateManager)
 void Window::initialize(float _camX, float _camY, float _camZ)
 {
     log("Window initializer", LogLevel::DEBUG);
+    if (!loadingRenderer) 
+    {
+        log("Woops, you forgot to set loadingRenderer before initializing the window. It is null.", LogLevel::ERROR);
+    }
 
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -152,61 +152,25 @@ void Window::loadTextures()
     log("loadTextures is no longer needed", LogLevel::WARNING);
 }
 
-//void Window::mainLoop(World* _world)
-//{
-//	world = _world;
-//	//gameState.setState(GameState::MainMenu);
-//
-//	if (!_world) // if the world has not been created yet
-//    {
-//        log("World pointer is null in Window::mainLoop", LogLevel::ERROR);
-//        // Render main menu
-//        //return;
-//    }
-//
-//    glEnable(GL_DEPTH_TEST);
-//
-//    while (!glfwWindowShouldClose(window.get()))
-//    {
-//        float currentFrame = static_cast<float>(glfwGetTime());
-//        deltaTime = currentFrame - lastFrame;
-//        lastFrame = currentFrame;
-//
-//        /*if (gameState.is(GameState::None)) 
-//        {
-//			log("GameState is None.", LogLevel::INFO);
-//        }*/
-//
-//        update();
-//        //processInput(_world);
-//
-//        //sceneRenderer->RenderScene();
-//
-//        glfwSwapBuffers(window.get());
-//        glfwPollEvents();
-//
-//        GLenum err;
-//        while ((err = glGetError()) != GL_NO_ERROR)
-//            std::cout << "OpenGL error: " << err << std::endl;
-//    }
-//}
-
 void Window::mainLoop(World* world)
 {
     if (!loadingRenderer) 
     {
-		loadingRenderer = new LoadingScreenRenderer(this);
+        log("loadingRenderer is null", LogLevel::ERROR);
     }
     while (!glfwWindowShouldClose(getGLFWwindow())) {
         clearColor();
+        //log("Game state is: " + std::to_string(static_cast<int>(gameState.getState())), LogLevel::DEBUG);
 
         switch (gameState.getState()) {
 
         case GameState::LOADING:
+            //log("GameState is LOADING", LogLevel::DEBUG);
             loadingRenderer->render();
             break;
 
         case GameState::PLAYING:
+            //log("GameState is PLAYING", LogLevel::DEBUG);
             //world->update();
             //world->render();
             break;
@@ -216,9 +180,14 @@ void Window::mainLoop(World* world)
         pollEvents();
 
         // Fake loading completion for now
-        if (gameState.is(GameState::LOADING)) {
-            gameState.setState(GameState::PLAYING);
-        }
+        //if (gameState.is(GameState::LOADING)) {
+        //    gameState.setState(GameState::PLAYING);
+        //}
+
+
+        GLenum err;
+                while ((err = glGetError()) != GL_NO_ERROR)
+                    std::cout << "OpenGL error: " << err << std::endl;
     }
 }
 
@@ -227,6 +196,11 @@ void Window::cleanupImGui()
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+}
+
+void Window::setLoadingRenderer(LoadingScreenRenderer* _renderer)
+{
+    loadingRenderer = _renderer;
 }
 
 void Window::terminateWindow()
@@ -247,36 +221,6 @@ void Window::clearColor()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Window::update()
-{
-	inputManager->checkESCToggle();
-
-    if (gameState.is(GameState::PAUSED)) 
-    {
-		log("GameState is Paused", LogLevel::STATE);
-    }
-
-    if (gameState.is(GameState::MAIN_MENU))
-    {
-        // here we are in the main menu state, so render the main menu and process menu inputs
-        log("GameState is mainMenu", LogLevel::STATE);
-		gameState.setState(GameState::PLAYING);
-
-    }
-
-    if (gameState.is(GameState::PLAYING))
-    {
-        log("GameState is Playing", LogLevel::STATE);
-        processInput(world);
-        sceneRenderer->RenderScene();
-    }
-
-    if (gameState.is(GameState::GAME_OVER)) 
-    {
-		log("GameState is GameOver", LogLevel::STATE);
-    }
-}
-
 void Window::processInput(World* _world)
 {
     if (!inputManager)
@@ -286,7 +230,4 @@ void Window::processInput(World* _world)
 
 	inputManager->checkESCToggle();
     inputManager->processInput(deltaTime);
-
-
-    
 }

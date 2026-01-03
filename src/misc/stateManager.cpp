@@ -7,6 +7,7 @@ using namespace StateManager;
 
 void GameStateManager::setState(GameState newState)
 {
+    log("changing game state");
     auto newIndex = (int)newState;
     if (newIndex < 0 || newIndex >= (int)GameState::COUNT) {
         log("Invalid GameState enum value", LogLevel::STATE);
@@ -29,7 +30,7 @@ void GameStateManager::setState(GameState newState)
 
     log(std::string("State exit: ") + toString(currentState), LogLevel::STATE);
 
-    auto exitCb = exitCallbacks[(int)currentState];
+    auto exitCb = exitCallbacks[static_cast<int>(currentState)];
     if (exitCb) exitCb();
 
     previousState = currentState;
@@ -51,11 +52,15 @@ bool GameStateManager::isValidTransition(GameState from, GameState to)
     case GameState::NONE:
         return to == GameState::LOADING;
     case GameState::LOADING:
-        return to == GameState::PLAYING;
+        return to == GameState::PLAYING || to == GameState::MAIN_MENU;
     case GameState::PLAYING:
         return to == GameState::PAUSED || to == GameState::GAME_OVER;
     case GameState::PAUSED:
-        return to == GameState::PLAYING;
+        return to == GameState::PLAYING || to == GameState::MAIN_MENU;
+	case GameState::GAME_OVER:
+		return to == GameState::MAIN_MENU;
+    case GameState::MAIN_MENU:
+		return to == GameState::LOADING;
     default:
         return false;
     }
@@ -63,6 +68,7 @@ bool GameStateManager::isValidTransition(GameState from, GameState to)
 
 void GameStateManager::onEnter(GameState state, StateCallback callback)
 {
+    log("onEnter");
     int index = (int)state;
     if (index < 0 || index >= (int)GameState::COUNT)
         return;
@@ -73,6 +79,7 @@ void GameStateManager::onEnter(GameState state, StateCallback callback)
 
 void GameStateManager::onExit(GameState state, StateCallback callback)
 {
+    log("onExit");
     int index = (int)state;
     if (index < 0 || index >= (int)GameState::COUNT)
         return;

@@ -14,16 +14,19 @@ static const float PLAYER_X = 5.0f;
 static const float PLAYER_Y = 2.0f;
 static const float PLAYER_Z = 5.0f;
 
+
+
 Window* myWindow;
 World* myWorld;
 
+StateManager::GameStateManager Game3D::gameStateManager;
 LoadingScreenRenderer* loadingScreenRenderer = nullptr;
 
-StateManager::GameStateManager Game3D::gameStateManager;
 
 static void onEnterLoading()
 {
-	loadingScreenRenderer = new LoadingScreenRenderer(myWindow);
+	// do loading tasks here
+	log("LOADING", LogLevel::STATE);
 }
 
 static void onExitLoading()
@@ -34,8 +37,12 @@ static void onExitLoading()
 Game3D::Game3D()
 {
 	myWindow = new Window(gameStateManager);
+	loadingScreenRenderer = new LoadingScreenRenderer(myWindow);
+
+	myWindow->setLoadingRenderer(loadingScreenRenderer);
 	myWindow->initialize(5.0f, 2.0f, 5.0f);
 	myWindow->createWindow();
+	loadingScreenRenderer->init();
 
 	gameStateManager.onEnter(StateManager::GameState::LOADING, onEnterLoading);
 	gameStateManager.onExit(StateManager::GameState::LOADING, onExitLoading);
@@ -64,6 +71,11 @@ Game3D::~Game3D()
 //}
 
 
+LoadingScreenRenderer* Game3D::getLoadingScreenRenderer()
+{
+	return loadingScreenRenderer;
+}
+
 bool Game3D::initializeGameWindow()
 {
 	log("Game3D Constructor_2", LogLevel::DEBUG);
@@ -72,7 +84,7 @@ bool Game3D::initializeGameWindow()
 	myWindow->initialize(PLAYER_X, PLAYER_Y, PLAYER_Z);
 	myWindow->createWindow();
 
-	return false;
+	return true;
 }
 
 void Game3D::start()

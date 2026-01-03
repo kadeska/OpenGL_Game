@@ -41,17 +41,15 @@ int main(int argc, char* argv[])
 
 
 	// initialize game
-	Game3D* myGame3D = new Game3D();
-	// print max vertex attributes for debugging
+	Game3D* game = new Game3D();
 	//printMaxVertexAttributes();
-	// start game loop
-	//myGame3D->start();
-	// clean up and exit
-	//myGame3D->stop();
+	game->start();
+	game->stop();
 
 
 	// I do the following below to keep the console window open until the user presses any button.
-	std::cout << '\n' << "Game quit in State: " + std::to_string(static_cast<int>(myGame3D->gameStateManager.getState())) << '\n';
+	std::cout << '\n' << "Game quit in State: " + std::to_string(static_cast<int>(game->gameStateManager.getState())) << '\n';
+	// if the game quit during loading, RIP any save data that might be corupted 
 	std::cout << '\n' << "Game has quit, press any button to close console... " << '\n';
 
 	std::cin.get(); // wait for user input before closing console

@@ -18,6 +18,8 @@
 // Forward declaration
 class SceneRenderer;
 
+
+
 /*
  Class: Window
  ----------------
@@ -59,15 +61,16 @@ public:
         return window.get();
     }
 
-private:
-    // ---------------------------------------------------
-    // Input and rendering
-    // ---------------------------------------------------
+	// Set the loading screen renderer pointer for later use.
+	// Must be set before main loop starts.
+    void setLoadingRenderer(LoadingScreenRenderer* _renderer);
 
-	// Will call the apropriate input processing and rendering functions based on game state.
-    void update();
+private:
+
     void processInput(World* world);
     void cleanupImGui();
+
+    
 
     // ---------------------------------------------------
     // Members
@@ -76,6 +79,13 @@ private:
 	LoadingScreenRenderer* loadingRenderer = nullptr;
     std::unique_ptr<SceneRenderer> sceneRenderer;
     std::unique_ptr<InputManager> inputManager;
+
+
+    
+
+    // make sure to only have one instance of GameStateManager, here we have a referance to it.
+    // the ref points to the StateManager in game3D.cpp
+    StateManager::GameStateManager& gameState;
 
     // Timing
     float deltaTime = 0.0f;
