@@ -83,6 +83,7 @@ glm::mat4 Camera3D::GetViewMatrix()
 
 void Camera3D::ProcessMouseMovement(float _xOffset, float _yOffset, GLboolean constrainPitch)
 {
+	//log("Camera3D: Proccessing mouse movement ", LogLevel::DEBUG);
 	_xOffset *= camMouseSensitivity;
 	_yOffset *= camMouseSensitivity;
 
@@ -154,6 +155,7 @@ void Camera3D::updateCameraVectors()
 
 glm::vec3 Camera3D::getCamPos()
 {
+	//log("CamPos: " + std::to_string(camPos.x) + ", " + std::to_string(camPos.y));
 	return camPos;
 }
 

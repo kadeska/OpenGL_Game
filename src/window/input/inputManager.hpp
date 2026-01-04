@@ -6,17 +6,20 @@
 class InputManager
 {
 public:
-    InputManager(GLFWwindow* window, SceneRenderer& renderer);
+    InputManager(GLFWwindow* window, SceneRenderer* renderer);
 
     void processInput(float deltaTime);
 	void checkESCToggle();
     void processMouseMovement(double xposIn, double yposIn);
     void processMouseScroll(double yoffset);
 
+    bool isPaused() const { return paused; }
+
+
 private:
     GLFWwindow* window = nullptr;
     World* world = nullptr;
-    SceneRenderer& sceneRenderer;
+    SceneRenderer* sceneRenderer;
 
     // Edge detection states
     bool escPrevPressed = false;

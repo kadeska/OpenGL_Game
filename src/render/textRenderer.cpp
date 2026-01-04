@@ -101,14 +101,9 @@ bool TextRenderer::init(const std::string& fontPath, Shader* textShader, int scr
     return true;
 }
 
-void TextRenderer::renderText(
-    const std::string& text,
-    glm::vec3 color,
-    float x,
-    float y,
-    float scale
-)
+void TextRenderer::renderText(const std::string& text, glm::vec3 color, float x, float y, float scale)
 {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     // Save OpenGL state ImGui cares about
     GLboolean blendEnabled = glIsEnabled(GL_BLEND);
     GLboolean cullEnabled = glIsEnabled(GL_CULL_FACE);

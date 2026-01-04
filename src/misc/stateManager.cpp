@@ -7,14 +7,12 @@ using namespace StateManager;
 
 void GameStateManager::setState(GameState newState)
 {
-    log("changing game state");
+    log("changing game state", LogLevel::DEBUG);
     auto newIndex = (int)newState;
     if (newIndex < 0 || newIndex >= (int)GameState::COUNT) {
         log("Invalid GameState enum value", LogLevel::STATE);
         return;
     }
-
-
 
     if (currentState == newState) {
         log(
@@ -68,7 +66,7 @@ bool GameStateManager::isValidTransition(GameState from, GameState to)
 
 void GameStateManager::onEnter(GameState state, StateCallback callback)
 {
-    log("onEnter");
+    log("Registering onEnter CB", LogLevel::DEBUG);
     int index = (int)state;
     if (index < 0 || index >= (int)GameState::COUNT)
         return;
@@ -79,7 +77,7 @@ void GameStateManager::onEnter(GameState state, StateCallback callback)
 
 void GameStateManager::onExit(GameState state, StateCallback callback)
 {
-    log("onExit");
+    log("Registering onExit CB", LogLevel::DEBUG);
     int index = (int)state;
     if (index < 0 || index >= (int)GameState::COUNT)
         return;

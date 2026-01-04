@@ -13,6 +13,7 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
+#include "../render/loadingScreenRenderer.hpp"
 
 
 
@@ -22,7 +23,7 @@ using namespace StateManager;
 
 
 //GLFWwindow* win = nullptr;
-World* world = nullptr;
+//World* world = nullptr;
 
 // --------------------------------------------------------
 // GLFW Callbacks
@@ -36,14 +37,13 @@ namespace {
 
     void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
-        ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
+        /*ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
         if (ImGui::GetIO().WantCaptureKeyboard)
-            return;
+            return;*/
 
-        if (ImGui::GetIO().WantCaptureKeyboard)
-            return;
-
-        // Your game input handling
+   //     auto* inputManager = static_cast<InputManager*>(glfwGetWindowUserPointer(window));
+   //     if (inputManager && !ImGui::GetIO().WantCaptureMouse)
+			//inputManager->processInput(key);
     }
 
 
@@ -158,10 +158,10 @@ void Window::createWindow()
     //sceneRenderer = std::make_unique<SceneRenderer>(SCR_WIDTH, SCR_HEIGHT);
 
     //// 3. Initialize InputManager
-    //inputManager = std::make_unique<InputManager>(window.get(), *sceneRenderer);
+    inputManager = std::make_unique<InputManager>(window.get(), sceneRenderer);
 
     //// 4. Attach InputManager pointer to window user pointer for callbacks
-    //glfwSetWindowUserPointer(window.get(), inputManager.get());
+    glfwSetWindowUserPointer(window.get(), inputManager.get());
 
     //// 5. Set GLFW callbacks (now safe, because objects exist)
     glfwSetFramebufferSizeCallback(window.get(), framebuffer_size_callback);
@@ -199,10 +199,32 @@ void Window::mainLoop()
         log("loadingRenderer is null", LogLevel::ERROR);
     }
 
-    
+    lastFrame = glfwGetTime(); // initialize last frame time
+    deltaTime = 0.0f;
+
 
     while (!glfwWindowShouldClose(getGLFWwindow())) {
+        // --- Calculate deltaTime ---
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        // ----------------------------
+        // Cursor state management
+        // ----------------------------
+        if (gameState.is(GameState::PLAYING) && !inputManager->isPaused())
+        {
+            glfwSetInputMode(window.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
+        else
+        {
+            glfwSetInputMode(window.get(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        }
+
         clearColor();
+        pollEvents();        // Input first
+        processInput();
+
         //log("Game state is: " + std::to_string(static_cast<int>(gameState.getState())), LogLevel::DEBUG);
 
         switch (gameState.getState()) {
@@ -216,13 +238,11 @@ void Window::mainLoop()
 
         case GameState::PLAYING:
             //log("GameState is PLAYING", LogLevel::DEBUG);
-            //world->update();
-            //world->render();
+            //glfwSetInputMode(window.get(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+			sceneRenderer->RenderScene();
             break;
         }
-
-
-        pollEvents();        // Input first
+        
         startImGuiFrame();  // Then build ImGui
         renderImGui();      // Then render ImGui
         swapBuffers();
@@ -237,6 +257,11 @@ void Window::mainLoop()
 void Window::setLoadingRenderer(LoadingScreenRenderer* _renderer)
 {
     loadingRenderer = _renderer;
+}
+
+void Window::setSceneRenderer(SceneRenderer* _renderer)
+{
+	sceneRenderer = _renderer;
 }
 
 void Window::terminateWindow()
@@ -258,17 +283,20 @@ void Window::clearColor()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Window::processInput(World* _world)
+void Window::processInput()
 {
     if (!inputManager)
     {
         log("InputManager is null...", LogLevel::ERROR);
+        return;
     }
 
-    if (ImGui::GetIO().WantCaptureKeyboard)
+    // Only block input if ImGui is actively capturing for text input
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.WantTextInput)
         return;
 
-	inputManager->checkESCToggle();
+    inputManager->checkESCToggle();
     inputManager->processInput(deltaTime);
 }
 
@@ -292,13 +320,37 @@ void Window::initImGui()
 
 void Window::renderImGui()
 {
+    ImVec2 windowSize = ImGui::GetWindowSize();
+    ImVec2 buttonSize(120, 40);
+
     // Example: create a simple window
     ImGui::Begin("Hello, ImGui!");
     ImGui::Text("This is some debug text.");
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-        1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::End();
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    
 
+    ImGui::SetCursorPosX((windowSize.x - buttonSize.x) * 0.5f);
+    ImGui::Dummy(ImVec2(0.0f, 0.0f)); // <- anchors cursor without affecting layout
+
+    if (gameState.is(GameState::LOADING))
+    {
+        if (ImGui::Button("PLAY", buttonSize))
+        {
+            gameState.setState(GameState::PLAYING);
+        }
+    }
+
+    if (gameState.is(GameState::PLAYING))
+    {
+        if (ImGui::Button("EXIT", buttonSize))
+        {
+            gameState.setState(GameState::PAUSED);
+            gameState.setState(GameState::MAIN_MENU);
+            gameState.setState(GameState::LOADING);
+        }
+    }
+
+    ImGui::End();
     // Render ImGui to OpenGL
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

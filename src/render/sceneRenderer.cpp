@@ -39,31 +39,9 @@ std::vector<glm::vec3> donutPositions = {
     { 10.0f, 2.0f, -1.0f }
 };
 
-
-//SceneRenderer::SceneRenderer(const unsigned int _screenWidth, const unsigned int _screenHeight)
-//{
-//    // load models
-//    models.push_back(std::make_unique<Model>("models/backpack/backpack.obj"));
-//    models.push_back(std::make_unique<Model>("models/donut/donut.obj"));
-//
-//    // camera
-//    sceneWidth = _screenWidth;
-//    sceneHeight = _screenHeight;
-//    camera = std::make_unique<Camera3D>(glm::vec3(5.0f, 2.0f, 5.0f), glm::vec3(0.0f, 1.0f, 0.0f), 45.0f, -30.0f);
-//
-//    // shaders
-//    //log("Creating shader programs for scene and text", LogLevel::DEBUG);
-//    sceneShader = std::make_unique<Shader>("shaders/vertexShader.vs", "shaders/fragmentShader.fs");
-//    textShader = std::make_unique<Shader>("shaders/textVertexShader.vs", "shaders/textFragmentShader.fs");
-//}
-
 SceneRenderer::SceneRenderer(unsigned int w, unsigned int h) : sceneWidth(w), sceneHeight(h)
 {
     log("SceneRenderer constructor", DEBUG);
-    loadModels();
-    initCamera();
-    initSceneShader();
-    populateRenderables();
 }
 
 void SceneRenderer::loadModels()
@@ -72,6 +50,15 @@ void SceneRenderer::loadModels()
 
     models.push_back(std::make_unique<Model>("models/backpack/backpack.obj"));
     models.push_back(std::make_unique<Model>("models/donut/donut.obj"));
+}
+
+void SceneRenderer::initSceneRenderer()
+{
+    log("Inititalizing scene renderer", LogLevel::DEBUG);
+    loadModels();
+    initCamera();
+    initSceneShader();
+    populateRenderables();
 }
 
 void SceneRenderer::initCamera()
@@ -138,15 +125,23 @@ void SceneRenderer::populateRenderables()
 
 void SceneRenderer::useSceneShader()
 {
+    if (!sceneShader) 
+    {
+        log("Scene Shader is null", LogLevel::ERROR);
+        return;
+    }
     sceneShader->use();
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 }
 
 void SceneRenderer::RenderScene()
 {
     // clear color
-
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     useSceneShader();
     initProjectionMatrix();

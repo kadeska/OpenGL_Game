@@ -43,7 +43,7 @@ public:
 	 Parameterized constructor that allows setting the seed for world generation
 	 and the size of the world.
 	*/
-	World(Shader* _shader, float _seed, int _worldSize);
+	World();
 
 	void createWorld(float seed);
 

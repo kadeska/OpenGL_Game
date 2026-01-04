@@ -22,6 +22,7 @@ private:
 	int sceneWidth, sceneHeight;
 
 	void loadModels();
+	
 	void initCamera();
 	void initSceneShader();
 	void initProjectionMatrix();
@@ -34,7 +35,7 @@ public:
 	SceneRenderer(const unsigned int _screenWidth, const unsigned int _screenHeight);
 	~SceneRenderer() = default;
 
-
+	void initSceneRenderer();
 	void RenderScene();
 
 	Camera3D& getCamera();

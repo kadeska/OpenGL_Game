@@ -36,11 +36,11 @@ float worldSeed = 0.0f;
 int worldSize = 0;
 
 
-World::World(Shader* _shader, float _seed, int _worldSize) 
+World::World() 
 {
 	log("World Constructor", LogLevel::DEBUG);
 
-	init(_shader, _seed, _worldSize);
+	//init(_shader, _seed, _worldSize);
 	//setPlayerPos({ 5, 5, 5 });
 
 }

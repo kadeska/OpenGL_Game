@@ -40,7 +40,7 @@ public:
     Window(StateManager::GameStateManager& _gameStateManager);
     ~Window() = default;
     void initialize(float camX, float camY, float camZ);
-    //void initSceneRenderer();
+	// createWindow() depends on sceneRenderer being initialized and set first.
     void createWindow();
     void loadOpenGL();
     void mainLoop();
@@ -66,10 +66,11 @@ public:
 	// Set the loading screen renderer pointer for later use.
 	// Must be set before main loop starts.
     void setLoadingRenderer(LoadingScreenRenderer* _renderer);
+    void setSceneRenderer(SceneRenderer* _renderer);
 
 private:
 
-    void processInput(World* world);
+    void processInput();
 	void initImGui();
 	void renderImGui();
 	void startImGuiFrame();
@@ -82,7 +83,7 @@ private:
     // ---------------------------------------------------
     std::unique_ptr<GLFWwindow, decltype(&glfwDestroyWindow)> window{ nullptr, glfwDestroyWindow };
 	LoadingScreenRenderer* loadingRenderer = nullptr;
-    std::unique_ptr<SceneRenderer> sceneRenderer;
+    SceneRenderer* sceneRenderer = nullptr;
     std::unique_ptr<InputManager> inputManager;
 
 

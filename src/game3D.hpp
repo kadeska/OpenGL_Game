@@ -1,6 +1,7 @@
 #pragma once
 #include "misc/stateManager.hpp"
 #include "render/loadingScreenRenderer.hpp"
+#include "render/sceneRenderer.hpp"
 
 class Game3D
 {
@@ -26,6 +27,7 @@ public:
 	}
 
 	LoadingScreenRenderer* getLoadingScreenRenderer();
+	SceneRenderer* getSceneRenderer();
 
 	//---------------------------------------------
 	//---------------------------------------------

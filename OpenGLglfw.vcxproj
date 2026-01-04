@@ -191,6 +191,7 @@
     <ClCompile Include="src\window\window.cpp" />
     <ClCompile Include="src\world\world.cpp" />
     <ClCompile Include="src\render\textRenderer.cpp" />
+    <ClCompile Include="src\world\worldGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\hostile\enemyController.hpp" />
@@ -232,6 +233,7 @@
     <ClInclude Include="src\render\textRenderer.hpp" />
     <ClInclude Include="src\inventory\inventoryManager.hpp" />
     <ClInclude Include="src\inventory\inventory.hpp" />
+    <ClInclude Include="src\world\worldGenerator.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\awesomeface.png" />

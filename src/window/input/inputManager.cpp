@@ -6,7 +6,7 @@
 using ProgramLogger::log;
 using ProgramLogger::LogLevel;
 
-InputManager::InputManager(GLFWwindow* _window, SceneRenderer& _renderer)
+InputManager::InputManager(GLFWwindow* _window, SceneRenderer* _renderer)
     : window(_window), sceneRenderer(_renderer)
 {
 }
@@ -27,15 +27,24 @@ bool InputManager::isKeyPressedOnce(int key, bool& prevState)
 // -----------------------------
 void InputManager::moveCamera(const glm::vec3& direction, float deltaTime)
 {
-    float velocity = sceneRenderer.getCamera().getCamMovementSpeed() * deltaTime;
-    glm::vec3 intendedPos = sceneRenderer.getCamera().getCamPos() + direction * velocity;
-    glm::vec3 checkPos = intendedPos + glm::normalize(direction) * sceneRenderer.getCamera().getCollisionRadius();
-    glm::vec3 gridCheckPos = world->getEntityManager()->snapToGrid(checkPos);
-
-    if (!world->getEntityManager()->isPositionOccupied(gridCheckPos))
+    //log("Move Camera called");
+    //log("DeltaTime: " + std::to_string(deltaTime));
+    if (!sceneRenderer) 
     {
-        sceneRenderer.getCamera().setCamPos(intendedPos);
+        log("scene render is null: from InputManager::moveCamera");
+        return;
     }
+    float velocity = sceneRenderer->getCamera().getCamMovementSpeed() * deltaTime;
+    glm::vec3 intendedPos = sceneRenderer->getCamera().getCamPos() + direction * velocity;
+    glm::vec3 checkPos = intendedPos + glm::normalize(direction) * sceneRenderer->getCamera().getCollisionRadius();
+    //glm::vec3 gridCheckPos = world->getEntityManager()->snapToGrid(checkPos);
+
+    /*if (!world->getEntityManager()->isPositionOccupied(gridCheckPos))
+    {
+        sceneRenderer->getCamera().setCamPos(intendedPos);
+    }*/
+
+    sceneRenderer->getCamera().setCamPos(intendedPos);
 }
 
 // -----------------------------
@@ -43,8 +52,11 @@ void InputManager::moveCamera(const glm::vec3& direction, float deltaTime)
 // -----------------------------
 void InputManager::processInput(float deltaTime)
 {
-
-	//checkESCToggle();
+    //log("Process Input called");
+    if (!sceneRenderer) 
+    {
+        log("", LogLevel::ERROR);
+    }
 
     if (paused) return; // skip rest of input if paused
 
@@ -54,8 +66,8 @@ void InputManager::processInput(float deltaTime)
 
     if (world == nullptr)
     {
-        log("World pointer is null in InputManager::processInput", LogLevel::ERROR);
-        return;
+        //log("World pointer is null in InputManager::processInput", LogLevel::ERROR);
+        //return;
     }
 
 
@@ -63,24 +75,24 @@ void InputManager::processInput(float deltaTime)
     // ----------------------------
     // SPACE: Spawn cube
     // ----------------------------
-    if (isKeyPressedOnce(GLFW_KEY_SPACE, spacePrevPressed))
-        world->createCube(world->getPlayerPos() + glm::vec3(2.0f, 0.0f, 0.0f));
+    if (isKeyPressedOnce(GLFW_KEY_SPACE, spacePrevPressed)) {}
+        //world->createCube(world->getPlayerPos() + glm::vec3(2.0f, 0.0f, 0.0f));
 
     // ----------------------------
     // G: Toggle gravity
     // ----------------------------
     if (isKeyPressedOnce(GLFW_KEY_G, toggleGravityPrevPressed))
     {
-        bool useGravity = sceneRenderer.getCamera().getUseGravity();
-        sceneRenderer.getCamera().setUseGravity(!useGravity);
+        bool useGravity = sceneRenderer->getCamera().getUseGravity();
+        sceneRenderer->getCamera().setUseGravity(!useGravity);
         log(std::string("Gravity toggled ") + (!useGravity ? "on" : "off"), LogLevel::DEBUG);
     }
 
     // ----------------------------
     // C: Spawn chest
     // ----------------------------
-    if (isKeyPressedOnce(GLFW_KEY_C, spawnInteractablePrevPressed))
-        world->createChest(world->getPlayerPos() + glm::vec3(2.0f, 0.0f, 0.0f));
+    if (isKeyPressedOnce(GLFW_KEY_C, spawnInteractablePrevPressed)) {}
+        //world->createChest(world->getPlayerPos() + glm::vec3(2.0f, 0.0f, 0.0f));
 
     // ----------------------------
     // E: Interact with closest chest
@@ -95,20 +107,34 @@ void InputManager::processInput(float deltaTime)
     // ----------------------------
     // TAB: Toggle player inventory
     // ----------------------------
-    if (isKeyPressedOnce(GLFW_KEY_TAB, openPlayerInvPrevPressed))
-        world->togglePlayerInventory();
+    if (isKeyPressedOnce(GLFW_KEY_TAB, openPlayerInvPrevPressed)) {}
+        //world->togglePlayerInventory();
 
     // ----------------------------
     // Movement (continuous)
     // ----------------------------
+        //log("movement");
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        moveCamera(sceneRenderer.getCamera().getCamFront(), deltaTime);
+    {
+        //log("W key pressed");
+        moveCamera(sceneRenderer->getCamera().getCamFront(), deltaTime);
+    }
+        
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        moveCamera(-sceneRenderer.getCamera().getCamFront(), deltaTime);
+    {
+        moveCamera(-sceneRenderer->getCamera().getCamFront(), deltaTime);
+    }
+        
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        moveCamera(-sceneRenderer.getCamera().getCamRight(), deltaTime);
+    {
+        moveCamera(-sceneRenderer->getCamera().getCamRight(), deltaTime);
+    }
+        
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        moveCamera(sceneRenderer.getCamera().getCamRight(), deltaTime);
+    {
+        moveCamera(sceneRenderer->getCamera().getCamRight(), deltaTime);
+    }
+        
 }
 
 void InputManager::checkESCToggle()
@@ -145,7 +171,7 @@ void InputManager::processMouseMovement(double xposIn, double yposIn)
     lastX = xpos;
     lastY = ypos;
 
-    sceneRenderer.getCamera().ProcessMouseMovement(xoffset, yoffset);
+    sceneRenderer->getCamera().ProcessMouseMovement(xoffset, yoffset);
 }
 
 // -----------------------------
@@ -153,5 +179,5 @@ void InputManager::processMouseMovement(double xposIn, double yposIn)
 // -----------------------------
 void InputManager::processMouseScroll(double yoffset)
 {
-    sceneRenderer.getCamera().ProcessMouseScroll(static_cast<float>(yoffset));
+    sceneRenderer->getCamera().ProcessMouseScroll(static_cast<float>(yoffset));
 }
