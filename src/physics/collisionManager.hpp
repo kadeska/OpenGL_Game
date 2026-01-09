@@ -2,9 +2,10 @@
 #include "gameObject.hpp"
 class CollisionManager
 {
+public:
 	CollisionManager();
 	~CollisionManager() = default;
 
-	bool checkForCollisions(GameObject _gameObject1, GameObject _gameObject2);
+	bool checkForCollisions(GameObject* _gameObject1, GameObject* _gameObject2);
 };
 

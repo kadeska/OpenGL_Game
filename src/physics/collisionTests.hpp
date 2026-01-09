@@ -25,7 +25,19 @@ namespace CollisionTests
 	static bool pointInAABB(const AABB& _box, const glm::vec3 _point);
 	static bool aabbToaabb(const AABB& _box1, const AABB& _box2);
 	static bool pointInSphere(const Sphere& _sphere, const glm::vec3& _point);
-	static bool sphereToSphere(const Sphere& _spr1, const Sphere& _spr2);
+	static bool sphereToSphere(const Sphere* _spr1, const Sphere* _spr2)
+	{
+		glm::vec3 dist(_spr1->_center - _spr2->_center);
+		float distsqr(glm::dot(dist, dist));
+		float radiiSumSquared(_spr1->_radius + _spr2->_radius);
+		radiiSumSquared *= radiiSumSquared;
+
+		if (distsqr <= radiiSumSquared)
+		{
+			return true;
+		}
+		return false;
+	}
 	static bool sphereToPlane(const Sphere* _spr, const glm::vec3& _point, const glm::vec3& _normal)
 	{
 		//Calculate a vector from the point on the plane to the center of the sphere

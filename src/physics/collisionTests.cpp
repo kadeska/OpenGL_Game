@@ -57,19 +57,7 @@ bool CollisionTests::pointInSphere(const Sphere& _sphere, const glm::vec3& _poin
 	return false;
 }
 
-bool CollisionTests::sphereToSphere(const Sphere& _spr1, const Sphere& _spr2)
-{
-	glm::vec3 dist(_spr1._center - _spr2._center);
-	float distsqr(glm::dot(dist, dist));
-	float radiiSumSquared(_spr1._radius + _spr2._radius);
-	radiiSumSquared *= radiiSumSquared;
 
-	if (distsqr <= radiiSumSquared) 
-	{
-		return true;
-	}
-	return false;
-}
 
 //bool CollisionTests::sphereToPlane(const Sphere& _spr, const glm::vec3& _point, const glm::vec3& _normal)
 //{

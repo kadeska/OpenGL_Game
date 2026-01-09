@@ -11,6 +11,8 @@
 
 #include "sceneRenderer.hpp"
 
+#include "../physics/collisionManager.hpp"
+
 #include "../misc/programLogger.hpp"
 using ProgramLogger::log;
 using ProgramLogger::LogLevel;
@@ -20,6 +22,7 @@ glm::mat4 projection;
 glm::mat4 view;
 
 GameObject* physicsBackpack = nullptr;
+CollisionManager* collisionManager = nullptr;
 
 
 // the vector of models to use for rendering each gameObject.
@@ -43,6 +46,7 @@ std::vector<glm::vec3> donutPositions = {
 SceneRenderer::SceneRenderer(unsigned int w, unsigned int h) : sceneWidth(w), sceneHeight(h)
 {
     log("SceneRenderer constructor", DEBUG);
+    collisionManager = new CollisionManager();
 }
 
 void SceneRenderer::loadModels()
@@ -150,7 +154,7 @@ void SceneRenderer::updateRenderables()
     for (int i = 0; i < renderables.size() && i < gameObjects.size(); i++) 
     {
         // check for collision
-        if (!CollisionTests::sphereToPlane(gameObjects[i]->getCollisionSphere(), glm::vec3(0, 1, 0), glm::vec3(0, 1, 0)))
+        if (!collisionManager->checkForCollisions(gameObjects[i], nullptr))
         {
             // collision not detected, move
             backpackPositions[i] += glm::vec3(0, -0.003, 0);
