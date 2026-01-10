@@ -103,7 +103,7 @@ namespace ProgramLogger {
     };
 
     static const bool printDebug = true;
-    static const bool printDebug_verbose = false;
+    static const bool printDebug_verbose = true;
 	static const bool printState = true;
     static const bool printRenderable = true;
 
@@ -154,12 +154,15 @@ namespace ProgramLogger {
 			case LogLevel::STATE:
 				if (!printState) break;
 				std::println("{}[{}][STATE]: {}{}", consoleColors.yellow, timestamp, message, consoleColors.reset);
+                break;
             case LogLevel::DEBUG_V:
                 if (!printDebug_verbose) break;
                 std::println("{}[{}][DEBUG_V]: {}{}", consoleColors.green, timestamp, message, consoleColors.reset);
+                break;
             case LogLevel::RENDERABLE:
                 if (!printRenderable) break;
                 std::println("{}[{}][RENDERABLE]: {}{}", consoleColors.green, timestamp, message, consoleColors.reset);
+                break;
         }
     }
 }

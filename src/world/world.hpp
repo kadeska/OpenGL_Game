@@ -4,10 +4,18 @@
 
 struct WorldData 
 {
+	std::string saveFilePath;
 	std::vector<GameObject*> gameObjects;
 };
 
 class World
 {
+public:
+	World();
+	~World();
+	void update();
+
+private:
+	WorldData worldData;
 };
 
