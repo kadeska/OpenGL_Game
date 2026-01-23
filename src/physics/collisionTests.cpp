@@ -32,16 +32,7 @@ bool CollisionTests::pointInAABB(const AABB& _box, const glm::vec3 _point)
 	return false;
 }
 
-bool CollisionTests::aabbToaabb(const AABB& _box1, const AABB& _box2)
-{
-	//Check if Box1's max is greater than Box2's min and Box1's min is less than Box2's max
-	return(_box1._max.x > _box2._min.x &&
-		_box1._min.x < _box2._max.x &&
-		_box1._max.y > _box2._min.y &&
-		_box1._min.y < _box2._max.y &&
-		_box1._max.z > _box2._min.z &&
-		_box1._min.z < _box2._max.z);
-}
+//bool CollisionTests::aabbToaabb(const AABB& _box1, const AABB& _box2)
 
 bool CollisionTests::pointInSphere(const Sphere& _sphere, const glm::vec3& _point)
 {

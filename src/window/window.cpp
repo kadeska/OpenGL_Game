@@ -22,7 +22,7 @@ using ProgramLogger::LogLevel;
 using namespace StateManager;
 
 bool inPauseState = false;
-
+bool isCursorHidden = false;
 
 //GLFWwindow* win = nullptr;
 //World* world = nullptr;
@@ -218,14 +218,7 @@ void Window::mainLoop()
             return;
         }
 
-        if (inputManager->isPaused() && !gameState.is(GameState::PAUSED)) 
-        {
-            gameState.setState(GameState::PAUSED);
-        }
-        else if (!inputManager->isPaused() && gameState.is(GameState::PAUSED)) 
-        {
-            gameState.setState(GameState::PLAYING);
-        }
+        
 
         // ----------------------------
         // Cursor state management
@@ -263,6 +256,23 @@ void Window::mainLoop()
 
         case GameState::PLAYING:
             //log("GameState is PLAYING", LogLevel::DEBUG);
+            
+            /*if (!isCursorHidden) 
+            {
+                glfwSetInputMode(window.get(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+                isCursorHidden = true;
+            }*/
+
+            if (gameState.is(GameState::PLAYING) && !inputManager->isPaused())
+            {
+                glfwSetInputMode(window.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            }
+            else
+            {
+                glfwSetInputMode(window.get(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            }
+
+
             //glfwSetInputMode(window.get(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 			sceneRenderer->RenderScene(deltaTime);
             break;

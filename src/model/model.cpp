@@ -26,10 +26,10 @@ using ProgramLogger::LogLevel;
 
 
 
-Model::Model(const char* _path, unsigned int _ID)
+Model::Model(const char* _path, Model_Type _type)
 {
     log("Model Constructor", LogLevel::DEBUG);
-    this->ID = _ID;
+    this->type = _type;
 	loadModel(_path);
 }
 

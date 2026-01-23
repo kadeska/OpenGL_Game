@@ -29,6 +29,8 @@ GameObject* physicsBackpack = nullptr;
 CollisionManager* collisionManager = nullptr;
 
 
+
+
 // the vector of models to use for rendering each gameObject.
 // Do not create multiple Model objects for the same model, 
 // we only use these Model objects to get the meshes for rendering
@@ -62,9 +64,12 @@ void SceneRenderer::loadModels()
 {
     log("Loading models", DEBUG);
 
-    models.push_back(new Model("models/backpack/backpack.obj", 0));
-    models.push_back(new Model("models/donut/donut.obj", 1));
-    models.push_back(new Model("models/plane/BasicFlatPlane_20x20.obj", 2));
+    // make sure that we load the models in the order of Model_Type,
+    // This way I can do an easy convertion from the Model_Type to an index for the renderables
+
+    models.push_back(new Model("models/plane/BasicFlatPlane_20x20.obj", Model_Type::GROUND));     // index 0
+    models.push_back(new Model("models/donut/donut.obj", Model_Type::DONUT));                     // index 1
+    models.push_back(new Model("models/backpack/backpack.obj", Model_Type::BACKPACK));            // index 2
 
 }
 
@@ -134,20 +139,20 @@ void SceneRenderer::populateRenderables()
 
     for (Model* m : models) 
     {
-        unsigned int id = m->getID();
-        switch (id)
+        Model_Type type = m->getModelType();
+        switch (type)
         {
-        case 0:
+        case Model_Type::BACKPACK:
             log("Backpack", LogLevel::RENDERABLE);
-            addRenderables(backpackPositions, id);
+            addRenderables(backpackPositions, type);
             break;
-        case 1:
+        case Model_Type::DONUT:
             log("Donut", LogLevel::RENDERABLE);
-            addRenderables(donutPositions, id);
+            addRenderables(donutPositions, type);
             break;
-        case 2:
+        case Model_Type::GROUND:
             log("GroundPlane", LogLevel::RENDERABLE);
-            addRenderables(groundPlanePositions, id);
+            addRenderables(groundPlanePositions, type);
             break;
 
         default:
@@ -197,15 +202,16 @@ void SceneRenderer::updateRenderables(float _deltaTime)
     }
 }
 
-void SceneRenderer::addRenderables(std::vector<glm::vec3> _pos, unsigned int _id)
+void SceneRenderer::addRenderables(std::vector<glm::vec3> _pos, Model_Type _type)
 {
-    
+    //log("Adding renderables of type: " + std::to_string(static_cast<int>(_type)), LogLevel::DEBUG_V);
     for (glm::vec3 pos : _pos) 
     {
         glm::mat4 transform(1.0f);
         transform = glm::translate(transform, pos);
-        // This will break if I dont have all the expected models loaded
-        renderables.push_back(new Renderable::Renderable(models[_id], transform, pos)); //  Need to fix, id should not directly index into the models array like this. Need to make a type.
+        // 
+        int index = static_cast<int>(_type);
+        renderables.push_back(new Renderable::Renderable(models[index], transform, pos)); 
     }
 }
 
@@ -237,4 +243,3 @@ bool SceneRenderer::hasBeenInitialized() const
 {
     return initialized;
 }
-

@@ -3,6 +3,7 @@
 #include "world/world.hpp"
 #include "render/loadingScreenRenderer.hpp"
 #include "misc/stateManager.hpp"
+//#include "hostile/enemyController.hpp"
 #include "world/worldGenerator.hpp"
 #include "misc/programLogger.hpp"
 using ProgramLogger::log;
@@ -26,6 +27,7 @@ StateManager::GameStateManager Game3D::gameStateManager;
 LoadingScreenRenderer* loadingScreenRenderer = nullptr;
 SceneRenderer* sceneRenderer = nullptr;
 WorldGenerator* worldGenerator = nullptr;
+//EnemyController* enemeyController = nullptr;
 
 
 static void onEnterPlaying() 
@@ -51,6 +53,7 @@ static void onEnterLoading()
 	{
 		worldGenerator = new WorldGenerator(sceneRenderer->getRenderablesRef());
 		worldGenerator->generateDefaultWorld(world);
+		// now that the world has been generated pass the world to the enemyController 
 	}
 
 	log("DONE LOADING", LogLevel::STATE);
@@ -69,6 +72,7 @@ Game3D::Game3D()
 	myWindow = new Window(gameStateManager);
 	loadingScreenRenderer = new LoadingScreenRenderer(myWindow);
 	sceneRenderer = new SceneRenderer(myWindow->getWindowSize().x, myWindow->getWindowSize().y);
+	//enemeyController = new EnemyController(nullptr);
 	
 	// passing the pointers to the window. pointers must be set first.
 	myWindow->setLoadingRenderer(loadingScreenRenderer);

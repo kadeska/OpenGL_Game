@@ -38,7 +38,8 @@ private:
 	void useSceneShader();
 	void updateRenderables(float _deltaTime);
 	// adds a new renderable to the list of renderables for each position in the list of positions given, and the model will be whatever model ID is passed.
-	void addRenderables(std::vector<glm::vec3> _pos, unsigned int _id);
+	void addRenderables(std::vector<glm::vec3> _pos, Model_Type _type);
+	int getModelIndex(Model_Type _type);
 
 public:
 	SceneRenderer(const unsigned int _screenWidth, const unsigned int _screenHeight);

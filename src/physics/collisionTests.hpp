@@ -3,16 +3,19 @@
 
 #include <glm/glm.hpp>
 
+// { glm::vec3 _max, glm::vec3 _min }
 struct AABB
 {
 	glm::vec3 _max;
 	glm::vec3 _min;
 };
+// { glm::vec3 _center, float _radius }
 struct Sphere
 {
 	glm::vec3 _center;
 	float _radius;
 };
+// { glm::vec3 _dir, glm::vec3 _start }
 struct Ray
 {
 	glm::vec3 _dir;
@@ -23,8 +26,20 @@ namespace CollisionTests
 {	
 	static int halfSpaceTest(const glm::vec3& _testPoint, const glm::vec3& _normal, const glm::vec3& _pointOnPlane, const float _offseset);
 	static bool pointInAABB(const AABB& _box, const glm::vec3 _point);
-	static bool aabbToaabb(const AABB& _box1, const AABB& _box2);
+
+	static bool aabbToaabb(const AABB* _box1, const AABB* _box2)
+	{
+		//Check if Box1's max is greater than Box2's min and Box1's min is less than Box2's max
+		return(_box1->_max.x > _box2->_min.x &&
+			_box1->_min.x < _box2->_max.x &&
+			_box1->_max.y > _box2->_min.y &&
+			_box1->_min.y < _box2->_max.y &&
+			_box1->_max.z > _box2->_min.z &&
+			_box1->_min.z < _box2->_max.z);
+	}
+
 	static bool pointInSphere(const Sphere& _sphere, const glm::vec3& _point);
+
 	static bool sphereToSphere(const Sphere* _spr1, const Sphere* _spr2)
 	{
 		glm::vec3 dist(_spr1->_center - _spr2->_center);
@@ -38,6 +53,7 @@ namespace CollisionTests
 		}
 		return false;
 	}
+
 	static bool sphereToPlane(const Sphere* _spr, const glm::vec3& _point, const glm::vec3& _normal)
 	{
 		//Calculate a vector from the point on the plane to the center of the sphere
@@ -55,6 +71,7 @@ namespace CollisionTests
 		//Else, the sphere is colliding with the plane
 		return true;
 	}
+
 	static bool rayToSphere(const Ray& _ray, const Sphere& _sphere, float& _t);
 	static bool movingSphereToSphere(const Sphere& _movingSphere, const glm::vec3& _sphereVel, const Sphere& _staticSphere, float& _t);
 	static bool movingSphereToContainingSphere(const Sphere& _movingSphere, const glm::vec3& _sphereVel, const Sphere& _staticSphere, float& _t);

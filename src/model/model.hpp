@@ -10,6 +10,13 @@
 
 unsigned int TextureFromFile(const char* _path, const std::string& _directory, bool _gamma = false);
 
+enum class Model_Type
+{
+	GROUND,
+	DONUT,
+	BACKPACK
+};
+
 class Model
 {
 public:
@@ -21,25 +28,19 @@ public:
 
 	// Model requires the path to the model, and an ID
 	// ID is used for filtering
-	Model(const char* _path, unsigned int _ID);
+	Model(const char* _path, Model_Type _type);
 	void Draw(Shader& _shader);
 
-	Model(const Model&) = delete;
-	Model& operator=(const Model&) = delete;
-
-	Model(Model&&) = default;
-	Model& operator=(Model&&) = default;
-
-	unsigned int getID() { return this->ID; }
+	Model_Type getModelType() { return this->type; }
+	void setModelType(Model_Type _type) { type = _type; }
 	
 private:
-	unsigned int ID;
+	
+	Model_Type type;
 
 	void loadModel(std::string _path);
 	void processNode(aiNode* _node, const aiScene* _scene);
 	Mesh processMesh(aiMesh* _mesh, const aiScene* _scene);
 	std::vector<Texture> loadMaterialTextures(aiMaterial* _mat, aiTextureType _type, std::string _typeName);
-
-
 };
 

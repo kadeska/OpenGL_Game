@@ -1,41 +1,54 @@
 #pragma once
 #include <vector>
+#include <glm/glm.hpp>
+#include <glm/fwd.hpp>
 
-#include "entity.hpp"
-#include "entityCube.hpp"
-#include "entityChest.hpp"
-#include "entityPlayer.hpp"
-#include "../hostile/enemyNormal.hpp"
+#include "../physics/gameObject.hpp"
+#include "../world/world.hpp"
 
+struct Entity_Item 
+{
+	GameObject* go;
+	glm::vec3 pos;
+	unsigned int ID;
+	unsigned int quantity;
+};
+
+struct Entity_Enemy 
+{
+	GameObject* go;
+	glm::vec3 pos;
+	unsigned int ID;
+	unsigned int HP;
+	unsigned int AP;
+	// goal target
+
+};
+
+struct Entity_Friendly 
+{
+	GameObject* go;
+	glm::vec3 pos;
+	unsigned int ID;
+	unsigned int HP;
+};
 
 class EntityManager
 {
 private:
+	std::vector<Entity_Item*> itemArray;
+	std::vector<Entity_Enemy*> enemyArray;
+	std::vector<Entity_Friendly*> friendlyArray;
 
 public:
-	EntityManager();
+	EntityManager(World* _world);
 	~EntityManager() = default;
 
-	void createEntityCube(glm::vec3 _cubeLocation);
-	void createEntityChest(glm::vec3 _cubeLocation);
-	void createEntityPlayer(glm::vec3 _cubeLocation);
-	void createNormalEnemy(glm::vec3 _enemyLocation);
+	void addEntityItem(Entity_Item* _item);
+	void addEntityEnemy(Entity_Enemy* _enemy);
+	void addEntityFriendly(Entity_Friendly* _friendly);
 
-
-	std::vector<EntityCube*> getArrayOfCubes();
-	std::vector<EntityChest*> getArrayOfChests();
-	std::vector<EnemyNormal*> getArrayOfNormalEnemies();
-
-	EntityCube* getNewCube();
-	EntityChest* getNewChest();
-	EnemyNormal* getNewNormalEnemy();
-	EntityPlayer* getPlayer();
-
-
-	// ---------------------------------------------------------------UTILITIES---------------------------------------------------------
 	
-	bool isPositionOccupied(glm::vec3 _pos);
-	glm::vec3 snapToGrid(glm::vec3& pos);
 
 };
 
