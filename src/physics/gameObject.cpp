@@ -12,8 +12,8 @@ using ProgramLogger::LogLevel;
 //	collisionSphere._radius = _radius;
 //}
 
-AABB* goAABB = new AABB{ {0,0,0},{0,0,0} };
-Sphere* goSphere = new Sphere{ {0,0,0}, 0 };
+//AABB* goAABB = new AABB{ {0,0,0},{0,0,0} };
+//Sphere* goSphere = new Sphere{ {0,0,0}, 0 };
 
 GameObject::GameObject(GO_Type _type, glm::vec3 _position, Renderable::Renderable* _renderable)
 {
@@ -30,7 +30,7 @@ GameObject::GameObject(GO_Type _type, glm::vec3 _position, Renderable::Renderabl
 	gameObjectRenderable = _renderable;
 
 	// set game objects position 
-	setPosition(_position);
+	//setPosition(_position);
 
 	// figure out what type of collission object to use based off of go_type
 	// do type spacific stuff
@@ -92,10 +92,10 @@ GameObject::GameObject(GO_Type _type, glm::vec3 _position, Renderable::Renderabl
 		}
 		// set bounding box min and max posisions.
 		log("bounding box Min X: " + std::to_string(minVertPos.x) + " , Y: " + std::to_string(minVertPos.y) + " , Z: " + std::to_string(minVertPos.z), LogLevel::DEBUG_V);
-		goAABB->_min = minVertPos; // set the bounding box min pos
+		aabb->_min = minVertPos; // set the bounding box min pos
 		log("bounding box Man X: " + std::to_string(maxVertPos.x) + " , Y: " + std::to_string(maxVertPos.y) + " , Z: " + std::to_string(maxVertPos.z), LogLevel::DEBUG_V);
-		goAABB->_max = maxVertPos; // set bounding box max pos
-		setAABB(goAABB);
+		aabb->_max = maxVertPos; // set bounding box max pos
+		setAABB(aabb);
 		break;
 	case GO_Type::WALL:
 		break;
