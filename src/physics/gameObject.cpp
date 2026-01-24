@@ -1,5 +1,6 @@
 #include "gameObject.hpp"
 #include "../misc/programLogger.hpp"
+#include "collisionTests.hpp"
 using ProgramLogger::log;
 using ProgramLogger::LogLevel;
 
@@ -91,11 +92,18 @@ GameObject::GameObject(GO_Type _type, glm::vec3 _position, Renderable::Renderabl
 			}
 		}
 		// set bounding box min and max posisions.
+		if (aabb == nullptr) 
+		{
+			// set aabb if its nullptr
+			aabb = new AABB();
+		}
+
 		log("bounding box Min X: " + std::to_string(minVertPos.x) + " , Y: " + std::to_string(minVertPos.y) + " , Z: " + std::to_string(minVertPos.z), LogLevel::DEBUG_V);
 		aabb->_min = minVertPos; // set the bounding box min pos
 		log("bounding box Man X: " + std::to_string(maxVertPos.x) + " , Y: " + std::to_string(maxVertPos.y) + " , Z: " + std::to_string(maxVertPos.z), LogLevel::DEBUG_V);
 		aabb->_max = maxVertPos; // set bounding box max pos
 		setAABB(aabb);
+		setPosition(_position);
 		break;
 	case GO_Type::WALL:
 		break;
@@ -111,9 +119,9 @@ GameObject::GameObject(GO_Type _type, glm::vec3 _position, Renderable::Renderabl
 
 Sphere* GameObject::getCollisionSphere()
 {
-	if (!collisionSphere)
+	if (collisionSphere == nullptr)
 	{
-		// log("model collision sphere is null", logLevel::ERROR);
+		 log("model collision sphere is null", LogLevel::ERROR);
 		return nullptr;
 	}
 	return collisionSphere;
@@ -121,10 +129,39 @@ Sphere* GameObject::getCollisionSphere()
 
 glm::vec3 GameObject::getPosition()
 {
-	return collisionSphere->_center;
+	if (collisionSphere) 
+	{
+		return collisionSphere->_center;
+	}
+	if (aabb) 
+	{
+		//return aabb->_center;
+		//return {0,0,0};
+	}
+	log("No available position available", LogLevel::WARNING);
+	return {0,0,0};
 }
 
 void GameObject::setPosition(glm::vec3 _position)
 {
-	collisionSphere->_center = _position;
+	if (collisionSphere != nullptr)
+	{
+		// set collision sphere posisiton
+		collisionSphere->_center = _position;
+	}
+	else
+	{
+		log("model collision sphere is null", LogLevel::WARNING);
+		//return;
+	}
+	
+	if (aabb != nullptr) 
+	{
+		// set aabb center pos ???
+	}
+	else
+	{
+		log("model aabb is null", LogLevel::WARNING);
+		//return;
+	}
 }

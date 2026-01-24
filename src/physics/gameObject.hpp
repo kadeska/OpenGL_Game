@@ -21,7 +21,7 @@ private:
 	
 	//Model* gameObjectModelPtr = nullptr;
 	Sphere* collisionSphere = nullptr;
-	AABB* aabb;
+	AABB* aabb = nullptr;
 	bool useGravity = false;
 	glm::vec3 velocity;
 	Renderable::Renderable* gameObjectRenderable = nullptr;
