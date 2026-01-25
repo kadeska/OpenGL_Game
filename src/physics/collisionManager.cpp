@@ -7,6 +7,7 @@ CollisionManager::CollisionManager()
 {
 }
 
+// need to fix this so it checks what physics object is set and do the right collision checks. 
 bool CollisionManager::checkForCollisions(GameObject* _gameObject1, GameObject* _gameObject2)
 {
 	success = CollisionTests::sphereToPlane(_gameObject1->getCollisionSphere(), glm::vec3(0,1.5,0), glm::vec3(0, 1, 0));

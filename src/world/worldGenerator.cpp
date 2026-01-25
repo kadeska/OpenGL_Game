@@ -52,7 +52,7 @@ void WorldGenerator::generateGameObjects()
             addGameObject(new GameObject(GO_Type::HOSTILE, pos, r));
             break;
         case Model_Type::GROUND: // ground
-            addGameObject(new GameObject(GO_Type::GROUND, pos, r));
+            addGameObject(new GameObject(GO_Type::GROUND, pos, r)); 
             break;
         default:
             break;

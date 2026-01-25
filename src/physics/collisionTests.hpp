@@ -8,6 +8,7 @@ struct AABB
 {
 	glm::vec3 _max;
 	glm::vec3 _min;
+	glm::vec3 _centerPosition;
 };
 // { glm::vec3 _center, float _radius }
 struct Sphere
