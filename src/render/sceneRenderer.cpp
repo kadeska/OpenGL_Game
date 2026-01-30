@@ -180,7 +180,7 @@ void SceneRenderer::updateRenderables(float _deltaTime)
     for (GameObject* go : world->getGameObjects()) 
     {
         // if the gameObject has a collision object such as sphere then calculate collisions
-        if (go->getCollisionSphere() != nullptr) 
+        if (go->getPhysicsObject()) 
         {
             // check for collision
             if (!collisionManager->checkForCollisions(go, nullptr))

@@ -14,8 +14,16 @@ enum class GO_Type
 	ITEM
 };
 
+enum class Physics_Type
+{
+	PT_NULL,
+	SPHERE,
+	AABB
+};
+
 struct PhysicsObject 
 {
+	Physics_Type physicsType = Physics_Type::PT_NULL;
 	Sphere* collisionSphere = nullptr;
 	AABB* aabb = nullptr;
 };
@@ -39,7 +47,7 @@ private:
 	Renderable::Renderable* gameObjectRenderable = nullptr;
 	GO_Type type = GO_Type::T_NULL;
 
-	PhysicsObject* physicsObject;
+	PhysicsObject* physicsObject = nullptr;
 
 	void initAABB();
 	void initCollisionSphere();
@@ -51,6 +59,9 @@ public:
 	void setPosition(glm::vec3 _position);
 
 	GO_Type getType() { return type; }
+	PhysicsObject* getPhysicsObject();
+
+	void constructPhysicsObject(GO_Type _type);
 
 	// returns the collision sphere, or nullptr
 	Sphere* getCollisionSphere();
