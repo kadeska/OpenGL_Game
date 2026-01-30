@@ -266,7 +266,7 @@ Sphere* GameObject::getCollisionSphere()
 {
 	if (physicsObject->collisionSphere == nullptr)
 	{
-		 log("model collision sphere is null", LogLevel::ERROR);
+		log("model collision sphere is null", LogLevel::ERROR);
 		return nullptr;
 	}
 	return physicsObject->collisionSphere;
