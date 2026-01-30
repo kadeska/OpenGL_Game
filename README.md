@@ -5,6 +5,6 @@ My 3d Game make with OpenGL
 
 ## Screenshots
 main menu
-![Alt text]([url_or_path_to_image](https://github.com/kadeska/OpenGL_Game/blob/main/screenshots/Screenshot1.png))
+![main_menu](https://github.com/kadeska/OpenGL_Game/blob/main/screenshots/Screenshot1.png)
 playing
-![Alt text]([url_or_path_to_image](https://github.com/kadeska/OpenGL_Game/blob/main/screenshots/Screenshot2.png))
+![playing](https://github.com/kadeska/OpenGL_Game/blob/main/screenshots/Screenshot2.png)
